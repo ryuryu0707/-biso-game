@@ -715,8 +715,9 @@ function finishGame(){
     Number(localStorage.getItem("bisoHighScore")||score);
 
   $("resultText").innerHTML=
-    "🏆 ハイスコア："+high+"点<br>"+
-    "友達にも挑戦してもらおう！";
+(score>old ? "🔥 自己ベスト更新！<br>" : "")+
+"🏆 ハイスコア："+high+"点<br>"+
+"友達にも挑戦してもらおう！";
 
   $("result").classList.add("show");
 
