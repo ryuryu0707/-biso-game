@@ -85,23 +85,34 @@ h1{
 }
 
 .kitchen{
-  background:
-  linear-gradient(#dcecff 0 43%,#c9d9e7 43% 46%,#777 46% 100%);
+  background:linear-gradient(
+    #dcecff 0 43%,
+    #c9d9e7 43% 46%,
+    #777 46% 100%
+  );
 }
 
 .bath{
-  background:
-  linear-gradient(#d9f0ff 0 52%,#b8cad6 52% 56%,#8b9299 56% 100%);
+  background:linear-gradient(
+    #d9f0ff 0 52%,
+    #b8cad6 52% 56%,
+    #8b9299 56% 100%
+  );
 }
 
 .aircon{
-  background:
-  linear-gradient(#e9f5ff 0 55%,#d1d8de 55% 59%,#9b9b9b 59% 100%);
+  background:linear-gradient(
+    #e9f5ff 0 55%,
+    #d1d8de 55% 59%,
+    #9b9b9b 59% 100%
+  );
 }
 
 .room{
-  background:
-  linear-gradient(#f3e9d5 0 58%,#b38c66 58% 100%);
+  background:linear-gradient(
+    #f3e9d5 0 58%,
+    #b38c66 58% 100%
+  );
 }
 
 .floor{
@@ -191,15 +202,16 @@ h1{
   box-shadow:inset 0 0 0 8px rgba(0,0,0,.15);
   cursor:pointer;
   transition:.15s;
-}
-
-.dirt:active{
-  transform:scale(.8);
+  z-index:10;
 }
 
 .dirt.small{
   width:42px;
   height:42px;
+}
+
+.dirt:active{
+  transform:scale(.8);
 }
 
 .dirt.gone{
@@ -291,13 +303,22 @@ button{
   inset:0;
   z-index:40;
   background:rgba(8,17,31,.96);
-  align-items:center;
-  justify-content:center;
   padding:20px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  align-items:flex-start;
+  justify-content:center;
+  touch-action:pan-y;
 }
 
 .result.show{
   display:flex;
+}
+
+.result .panel{
+  margin:20px auto;
+  flex:0 0 auto;
 }
 
 .scoreBig{
@@ -340,22 +361,43 @@ input{
   font-size:12px;
   padding:12px;
 }
-  .result{
-  overflow-y:auto;
-  overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  align-items:flex-start;
-  justify-content:center;
-  touch-action:pan-y;
+
+.popup{
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) scale(1);
+  z-index:99999;
+  text-align:center;
+  padding:30px 40px;
+  border-radius:25px;
+  background:#162a46;
+  border:4px solid #55e39a;
+  color:#fff;
+  font-size:40px;
+  font-weight:900;
+  box-shadow:0 0 40px rgba(85,227,154,.8);
+  pointer-events:none;
+  animation:pop .5s ease;
 }
 
-.result.show{
-  display:flex;
+.popup span{
+  font-size:30px;
 }
 
-.result .panel{
-  margin:20px auto;
-  flex:0 0 auto;
+.popup b{
+  font-size:46px;
+}
+
+@keyframes pop{
+  0%{
+    transform:translate(-50%,-50%) scale(.5);
+    opacity:0;
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(1);
+    opacity:1;
+  }
 }
 </style>
 </head>
@@ -371,6 +413,7 @@ input{
 </div>
 
 <div class="hud">
+
   <div class="card">
     <div class="num" id="stage">1</div>
     <div class="label">ステージ</div>
@@ -390,14 +433,19 @@ input{
     <div class="num" id="combo">0</div>
     <div class="label">コンボ🔥</div>
   </div>
+
 </div>
 
 <div id="game">
 
   <div class="start" id="start">
+
     <div class="panel">
+
       <div class="faces">🐉 🐶</div>
+
       <h2>美装職人！Ver.5</h2>
+
       <p>
         汚れをタップして落とせ！<br>
         4ステージを制覇して<br>
@@ -405,45 +453,72 @@ input{
       </p>
 
       <div class="buttons">
-        <button class="primary" onclick="startGame()">
+
+        <button
+          class="primary"
+          onclick="startGame()">
           現場へ出発！
         </button>
+
       </div>
+
     </div>
+
   </div>
 
-  <div class="scene kitchen active" id="scene1">
+  <div
+    class="scene kitchen active"
+    id="scene1">
+
     <div class="floor"></div>
     <div class="object cab"></div>
     <div class="object sink"></div>
+
   </div>
 
-  <div class="scene bath" id="scene2">
+  <div
+    class="scene bath"
+    id="scene2">
+
     <div class="object bathTub"></div>
     <div class="object shower"></div>
+
   </div>
 
-  <div class="scene aircon" id="scene3">
+  <div
+    class="scene aircon"
+    id="scene3">
+
     <div class="object ac"></div>
+
   </div>
 
-  <div class="scene room" id="scene4">
+  <div
+    class="scene room"
+    id="scene4">
+
     <div class="object sofa"></div>
     <div class="floor"></div>
+
   </div>
 
-  <div class="message" id="message">
+  <div
+    class="message"
+    id="message">
     汚れを全部落とせ！
   </div>
 
   <div id="dirtLayer"></div>
 
-  <div class="result" id="result">
+  <div
+    class="result"
+    id="result">
+
     <div class="panel">
 
       <div class="faces">🐉 🐶</div>
 
-      <h2 id="resultTitle">
+      <h2>
         全ステージ制覇！
       </h2>
 
@@ -451,8 +526,10 @@ input{
         👑 伝説の美装職人
       </div>
 
-      <div class="scoreBig" id="finalScore">
-        0
+      <div
+        class="scoreBig"
+        id="finalScore">
+        0点
       </div>
 
       <p id="resultText">
@@ -466,8 +543,7 @@ input{
         <input
           id="friendScore"
           type="number"
-          placeholder="友達のスコアを入力"
-        >
+          placeholder="友達のスコアを入力">
 
         <button
           class="primary"
@@ -500,6 +576,7 @@ input{
       </div>
 
     </div>
+
   </div>
 
 </div>
@@ -512,15 +589,15 @@ input{
 
 <script>
 
-let stage=1;
-let score=0;
-let combo=0;
-let time=30;
-let timer=null;
-let remaining=0;
-let playing=false;
+let stage = 1;
+let score = 0;
+let combo = 0;
+let time = 30;
+let timer = null;
+let remaining = 0;
+let playing = false;
 
-const stageNames=[
+const stageNames = [
   "",
   "キッチン現場",
   "浴室現場",
@@ -534,86 +611,104 @@ function $(id){
 
 function updateHUD(){
 
-  $("stage").textContent=stage;
-  $("time").textContent=time;
-  $("score").textContent=score;
-  $("combo").textContent=combo;
+  $("stage").textContent = stage;
+  $("time").textContent = time;
+  $("score").textContent = score;
+  $("combo").textContent = combo;
 
 }
 
 function startGame(){
 
-  $("start").style.display="none";
+  clearInterval(timer);
+
+  $("start").style.display = "none";
   $("result").classList.remove("show");
 
-  stage=1;
-  score=0;
-  combo=0;
-  time=30;
-  playing=true;
+  stage = 1;
+  score = 0;
+  combo = 0;
+  time = 30;
+  playing = true;
 
   showStage();
   createDirt();
+  updateHUD();
 
-  clearInterval(timer);
+  timer = setInterval(function(){
 
-  timer=setInterval(()=>{
-
-    if(!playing)return;
+    if(!playing){
+      return;
+    }
 
     time--;
 
     updateHUD();
 
-    if(time<=0){
+    if(time <= 0){
       finishStage();
     }
 
   },1000);
 
-  updateHUD();
 }
 
 function showStage(){
 
-  document.querySelectorAll(".scene")
-    .forEach(x=>x.classList.remove("active"));
+  document
+    .querySelectorAll(".scene")
+    .forEach(function(scene){
+      scene.classList.remove("active");
+    });
 
-  $("scene"+stage)
+  $("scene" + stage)
     .classList.add("active");
 
-  $("message").textContent=
-    stageNames[stage]+"！ 汚れを落とせ！";
+  $("message").textContent =
+    stageNames[stage] +
+    "！ 汚れを落とせ！";
 
 }
 
 function createDirt(){
 
-  const layer=$("dirtLayer");
+  const layer = $("dirtLayer");
 
-  layer.innerHTML="";
+  layer.innerHTML = "";
 
-  remaining=stage===1?7:
-            stage===2?8:
-            stage===3?9:10;
+  if(stage === 1){
+    remaining = 7;
+  }else if(stage === 2){
+    remaining = 8;
+  }else if(stage === 3){
+    remaining = 9;
+  }else{
+    remaining = 10;
+  }
 
-  for(let i=0;i<remaining;i++){
+  for(let i = 0; i < remaining; i++){
 
-    const d=document.createElement("div");
+    const dirt =
+      document.createElement("div");
 
-    d.className="dirt";
+    dirt.className = "dirt";
 
-    if(i%3===0)d.classList.add("small");
+    if(i % 3 === 0){
+      dirt.classList.add("small");
+    }
 
-    const x=8+Math.random()*78;
-    const y=18+Math.random()*62;
+    dirt.style.left =
+      (8 + Math.random() * 78) + "%";
 
-    d.style.left=x+"%";
-    d.style.top=y+"%";
+    dirt.style.top =
+      (18 + Math.random() * 62) + "%";
 
-    d.addEventListener("click",cleanDirt);
+    dirt.addEventListener(
+      "click",
+      cleanDirt
+    );
 
-    layer.appendChild(d);
+    layer.appendChild(dirt);
 
   }
 
@@ -621,37 +716,55 @@ function createDirt(){
 
 function cleanDirt(e){
 
-  if(!playing)return;
+  if(!playing){
+    return;
+  }
 
-  const d=e.currentTarget;
+  const dirt = e.currentTarget;
 
-  if(d.classList.contains("gone"))return;
+  if(dirt.classList.contains("gone")){
+    return;
+  }
 
-  d.classList.add("gone");
+  dirt.classList.add("gone");
 
   remaining--;
 
   combo++;
 
-  const bonus=100+(combo*20);
+  /*
+   * コンボが続くほど高得点。
+   * 11910点で固定されないようにしている。
+   */
+  const bonus =
+    100 + (combo * 20);
 
-  score+=bonus;
+  score += bonus;
 
   updateHUD();
 
-  if(remaining<=0){
+  if(remaining <= 0){
 
-    score+=1000;
+    /*
+     * ステージ完全クリアボーナス
+     */
+    score += 1000;
+
     combo++;
 
     updateHUD();
 
-    setTimeout(()=>{
+    setTimeout(function(){
 
-      if(stage<4){
+      if(!playing){
+        return;
+      }
+
+      if(stage < 4){
 
         stage++;
-        time=30;
+
+        time = 30;
 
         showStage();
         createDirt();
@@ -671,18 +784,27 @@ function cleanDirt(e){
 
 function finishStage(){
 
-  if(!playing)return;
-
-  if(remaining>0){
-
-    combo=0;
-    score=Math.max(0,score-100);
+  if(!playing){
+    return;
   }
 
-  if(stage<4){
+  /*
+   * 時間切れでも次ステージへ。
+   */
+  if(remaining > 0){
+
+    combo = 0;
+
+    score =
+      Math.max(0,score - 100);
+
+  }
+
+  if(stage < 4){
 
     stage++;
-    time=30;
+
+    time = 30;
 
     showStage();
     createDirt();
@@ -698,78 +820,99 @@ function finishStage(){
 
 function finishGame(){
 
-  playing=false;
-  clearInterval(timer);
-
-  const old=
-    Number(localStorage.getItem("bisoHighScore")||0);
-
-  if(score>old){
-    localStorage.setItem("bisoHighScore",score);
-
-    const popup=document.createElement("div");
-
-    popup.innerHTML=
-      "🔥<br><span>自己ベスト更新！</span><br>"+
-      "<b>"+score+"点</b>";
-
-    popup.style.position="fixed";
-    popup.style.left="50%";
-    popup.style.top="50%";
-    popup.style.transform="translate(-50%,-50%)";
-    popup.style.zIndex="99999";
-    popup.style.textAlign="center";
-    popup.style.padding="30px 45px";
-    popup.style.borderRadius="25px";
-    popup.style.background="#162a46";
-    popup.style.border="4px solid #55e39a";
-    popup.style.color="#fff";
-    popup.style.fontSize="42px";
-    popup.style.fontWeight="900";
-
-    popup.querySelector("span").style.fontSize="30px";
-    popup.querySelector("b").style.fontSize="48px";
-
-    document.body.appendChild(popup);
-
-    setTimeout(()=>{
-      popup.remove();
-    },1800);
+  if(!playing){
+    return;
   }
 
-  $("finalScore").textContent=score+"点";
+  playing = false;
 
-  const high=
-    Math.max(
-      score,
-      Number(localStorage.getItem("bisoHighScore")||0)
+  clearInterval(timer);
+
+  const oldHigh =
+    Number(
+      localStorage.getItem(
+        "bisoHighScore"
+      ) || 0
     );
 
-  $("resultText").innerHTML=
-    (score>old ? "🔥 自己ベスト更新！<br>" : "")+
-    "🏆 ハイスコア："+high+"点<br>"+
+  const isNewRecord =
+    score > oldHigh;
+
+  if(isNewRecord){
+
+    localStorage.setItem(
+      "bisoHighScore",
+      String(score)
+    );
+
+    showNewRecord();
+
+  }
+
+  const highScore =
+    Math.max(
+      score,
+      Number(
+        localStorage.getItem(
+          "bisoHighScore"
+        ) || 0
+      )
+    );
+
+  $("finalScore").textContent =
+    score + "点";
+
+  $("resultText").innerHTML =
+    (isNewRecord
+      ? "🔥 自己ベスト更新！<br>"
+      : "") +
+    "🏆 ハイスコア：" +
+    highScore +
+    "点<br>" +
     "友達にも挑戦してもらおう！";
 
   $("result").classList.add("show");
+
 }
 
-  $("finalScore").textContent=score+"点";
+function showNewRecord(){
 
-  const high=
-    Number(localStorage.getItem("bisoHighScore")||score);
+  const popup =
+    document.createElement("div");
 
-  $("resultText").innerHTML=
-(score>old ? "🔥 自己ベスト更新！<br>" : "")+
-"🏆 ハイスコア："+high+"点<br>"+
-"友達にも挑戦してもらおう！";
+  popup.className = "popup";
 
-  $("result").classList.add("show");
+  popup.innerHTML =
+    "🔥<br>" +
+    "<span>自己ベスト更新！</span><br>" +
+    "<b>" + score + "点</b>";
+
+  document.body.appendChild(popup);
+
+  setTimeout(function(){
+
+    popup.style.transition =
+      "all .5s ease";
+
+    popup.style.opacity = "0";
+
+    popup.style.transform =
+      "translate(-50%,-50%) scale(1.3)";
+
+  },1200);
+
+  setTimeout(function(){
+
+    popup.remove();
+
+  },1800);
 
 }
 
 function restartGame(){
 
-  $("result").classList.remove("show");
+  $("result")
+    .classList.remove("show");
 
   startGame();
 
@@ -777,35 +920,46 @@ function restartGame(){
 
 function judgeFriend(){
 
-  const friend=
-    Number($("friendScore").value);
+  const friend =
+    Number(
+      $("friendScore").value
+    );
 
   if(!friend){
 
-    $("judgeResult").innerHTML=
+    $("judgeResult").innerHTML =
       "<p>友達のスコアを入力してな！😆</p>";
 
     return;
+
   }
 
-  if(score>friend){
+  if(score > friend){
 
-    $("judgeResult").innerHTML=
-      "<p style='color:#55df9c;font-size:22px;font-weight:900'>"+
-      "🔥 俺の勝ち！</p>"+
-      "<p>"+score+"点 vs "+friend+"点</p>";
+    $("judgeResult").innerHTML =
+      "<p style='font-size:22px;font-weight:900'>" +
+      "🔥 俺の勝ち！</p>" +
+      "<p>" +
+      score +
+      "点 vs " +
+      friend +
+      "点</p>";
 
-  }else if(score<friend){
+  }else if(score < friend){
 
-    $("judgeResult").innerHTML=
-      "<p style='color:#ff7d7d;font-size:22px;font-weight:900'>"+
-      "😱 負けた！リベンジや！</p>"+
-      "<p>"+score+"点 vs "+friend+"点</p>";
+    $("judgeResult").innerHTML =
+      "<p style='font-size:22px;font-weight:900'>" +
+      "😱 負けた！リベンジや！</p>" +
+      "<p>" +
+      score +
+      "点 vs " +
+      friend +
+      "点</p>";
 
   }else{
 
-    $("judgeResult").innerHTML=
-      "<p style='font-size:22px;font-weight:900'>"+
+    $("judgeResult").innerHTML =
+      "<p style='font-size:22px;font-weight:900'>" +
       "🤝 引き分け！</p>";
 
   }
@@ -814,7 +968,7 @@ function judgeFriend(){
 
 function shareChallenge(){
 
-  const text=
+  const text =
 `🧹 美装職人！クリーンマスター
 
 👑 俺のスコア：${score}点
@@ -824,16 +978,19 @@ function shareChallenge(){
 
 #美装 #掃除 #ゲーム`;
 
-  const url=
+  const url =
     location.href;
 
-  const shareUrl=
-    "https://twitter.com/intent/tweet?text="+
-    encodeURIComponent(text)+
-    "&url="+
+  const shareUrl =
+    "https://twitter.com/intent/tweet?text=" +
+    encodeURIComponent(text) +
+    "&url=" +
     encodeURIComponent(url);
 
-  window.open(shareUrl,"_blank");
+  window.open(
+    shareUrl,
+    "_blank"
+  );
 
 }
 
