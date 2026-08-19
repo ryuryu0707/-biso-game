@@ -340,6 +340,23 @@ input{
   font-size:12px;
   padding:12px;
 }
+  .result{
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  align-items:flex-start;
+  justify-content:center;
+  touch-action:pan-y;
+}
+
+.result.show{
+  display:flex;
+}
+
+.result .panel{
+  margin:20px auto;
+  flex:0 0 auto;
+}
 </style>
 </head>
 
