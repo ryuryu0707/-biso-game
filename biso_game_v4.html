@@ -2055,7 +2055,7 @@ const bestRanking = Array.from(bestByName.values())
   .sort((a, b) => b.score - a.score)
   .slice(0, 5);
     rankingList.innerHTML =
-      bestRanking.map((item,index)=>
+      bestRanking.map((item,index)=>`
 
         <div class="rankRow">
 
