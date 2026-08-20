@@ -1937,7 +1937,132 @@ updateHUD();
 
 showRanking();
 
+/* SUPABASE ONLINE RANKING */
 
+const SB_URL =
+"https://xcbefejzuecysfyvxvpv.supabase.co";
+
+const SB_KEY =
+"sb_publishable_WcqQ344XWyOo8XSrAemz8A_5c5XZ1y5";
+
+saveRanking = async function(value){
+
+  let name =
+    localStorage.getItem("bisoPlayerName");
+
+  if(!name){
+    name =
+      prompt("ランキングの名前を入力してな！","リュウタ");
+
+    name =
+      (name || "匿名").trim().slice(0,20);
+
+    localStorage.setItem(
+      "bisoPlayerName",
+      name
+    );
+  }
+
+  try{
+
+    await fetch(
+      SB_URL + "/rest/v1/leaderboard",
+      {
+        method:"POST",
+
+        headers:{
+          "apikey":SB_KEY,
+          "Content-Type":"application/json",
+          "Prefer":"return=minimal"
+        },
+
+        body:JSON.stringify({
+          player_name:name,
+          score:value,
+          stage:TOTAL_STAGES,
+          combo:combo,
+          correct:0,
+          penalty:0
+        })
+      }
+    );
+
+    console.log("オンラインランキング保存成功");
+
+  }catch(error){
+
+    console.error(
+      "ランキング保存エラー",
+      error
+    );
+
+  }
+
+};
+
+showRanking = async function(){
+
+  try{
+
+    const response =
+      await fetch(
+        SB_URL +
+        "/rest/v1/leaderboard" +
+        "?select=player_name,score" +
+        "&order=score.desc" +
+        "&limit=5",
+        {
+          headers:{
+            "apikey":SB_KEY
+          }
+        }
+      );
+
+    const ranking =
+      await response.json();
+
+    if(!ranking.length){
+
+      rankingList.innerHTML =
+        "<div class='rankRow'>まだ記録なし</div>";
+
+      return;
+    }
+
+    const medals =
+      ["🥇","🥈","🥉","4️⃣","5️⃣"];
+
+    rankingList.innerHTML =
+      ranking.map((item,index)=>`
+
+        <div class="rankRow">
+
+          <span>
+            ${medals[index]}
+            ${index+1}位
+            ${item.player_name}
+          </span>
+
+          <span>
+            ${Number(item.score).toLocaleString()}点
+          </span>
+
+        </div>
+
+      `).join("");
+
+  }catch(error){
+
+    console.error(
+      "ランキング取得エラー",
+      error
+    );
+
+  }
+
+};
+
+showRanking();
 </script>
 
 </body>
