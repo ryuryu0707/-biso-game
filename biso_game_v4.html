@@ -2037,9 +2037,25 @@ showRanking = async function(){
   "4️⃣",
   "5️⃣"
 ];
+const bestByName = new Map();
 
+ranking.forEach(item => {
+  const name = item.player_name;
+  const score = Number(item.score);
+
+  if (!bestByName.has(name) || score > bestByName.get(name).score) {
+    bestByName.set(name, {
+      player_name: name,
+      score: score
+    });
+  }
+});
+
+const bestRanking = Array.from(bestByName.values())
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 5);
     rankingList.innerHTML =
-      ranking.map((item,index)=>`
+      bestRanking.map((item,index)=>
 
         <div class="rankRow">
 
