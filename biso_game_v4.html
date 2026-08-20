@@ -2040,7 +2040,7 @@ showRanking = async function(){
 const bestByName = new Map();
 
 ranking.forEach(item => {
-  const name = item.player_name;
+  const name = String(item.player_name).replace(/\s+/g, "").trim();
   const score = Number(item.score);
 
   if (!bestByName.has(name) || score > bestByName.get(name).score) {
