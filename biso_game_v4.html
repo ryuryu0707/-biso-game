@@ -2037,41 +2037,24 @@ showRanking = async function(){
   "4️⃣",
   "5️⃣"
 ];
-const bestByName = new Map();
-
-ranking.forEach(item => {
-  const name = String(item.player_name).replace(/\s+/g, "").trim();
-  const score = Number(item.score);
-
-  if (!bestByName.has(name) || score > bestByName.get(name).score) {
-    bestByName.set(name, {
-      player_name: name,
-      score: score
-    });
-  }
-});
-
-const bestRanking = Array.from(bestByName.values())
-  .sort((a, b) => b.score - a.score)
+const bestRanking = ranking
+  .sort((a, b) => Number(b.score) - Number(a.score))
   .slice(0, 5);
-    rankingList.innerHTML =
-      bestRanking.map((item,index)=>`
 
-        <div class="rankRow">
+rankingList.innerHTML =
+  bestRanking.map((item, index) => `
+    <div class="rankRow">
+      <span>
+        ${medals[index]}
+        ${index + 1}位
+        ${item.player_name}
+      </span>
 
-          <span>
-            ${medals[index]}
-            ${index+1}位
-            ${item.player_name}
-          </span>
-
-          <span>
-            ${Number(item.score).toLocaleString()}点
-          </span>
-
-        </div>
-
-      `).join("");
+      <span>
+        ${Number(item.score).toLocaleString()}点
+      </span>
+    </div>
+`).join("");
 
   }catch(error){
 
@@ -2089,3 +2072,5 @@ const bestRanking = Array.from(bestByName.values())
 
 </body>
 </html>
+
+      
