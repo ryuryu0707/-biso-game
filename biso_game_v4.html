@@ -6,1136 +6,1089 @@
 <title>美装職人！クリーンマスター</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
 html,body{
-margin:0;
-min-height:100%;
-font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
-background:#071222;
-color:white
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  background:#071222;
+  color:#fff;
 }
 
-body{padding:10px;overflow-x:hidden}
-
-h1{
-text-align:center;
-font-size:clamp(24px,7vw,42px);
-margin:8px 0 2px;
-font-weight:900
-}
-
-.sub{
-text-align:center;
-color:#dbe7f5;
-font-weight:800;
-margin-bottom:14px
-}
-
-.hud{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:8px;
-max-width:900px;
-margin:auto
-}
-
-.box{
-background:#162a46;
-border-radius:16px;
-text-align:center;
-padding:10px 4px
-}
-
-.num{
-font-size:clamp(22px,6vw,34px);
-font-weight:900
-}
-
-.lab{
-font-size:12px;
-color:#c8d6e8;
-font-weight:800
-}
-
-/* ゲーム */
-
-.game{
-position:relative;
-max-width:900px;
-height:min(72vh,760px);
-min-height:500px;
-margin:18px auto 12px;
-border:5px solid #416486;
-border-radius:28px;
-overflow:hidden;
-touch-action:none
-}
-
-.room{
-position:absolute;
-inset:0;
-transition:background .4s
-}
-
-/* ステージ背景 */
-
-.kitchen{
-background:
-linear-gradient(135deg,#fff0c7 0 48%,#d9bd89 48%)
-}
-
-.bath{
-background:
-linear-gradient(135deg,#d9f6ff,#86c9e7)
-}
-
-.window{
-background:
-linear-gradient(135deg,#bfe7ff 0 55%,#75a9ce 55%)
-}
-
-.living{
-background:
-linear-gradient(135deg,#ead8c0,#a98361)
-}
-
-.office{
-background:
-linear-gradient(135deg,#d9d7d0,#8d949b)
-}
-
-.roomTitle{
-position:absolute;
-top:12px;
-left:18px;
-color:#ffffffaa;
-font-size:25px;
-font-weight:900;
-z-index:2
-}
-
-/* 汚れ */
-
-.dirt{
-position:absolute;
-width:62px;
-height:42px;
-border-radius:50%;
-background:#704122;
-box-shadow:0 7px 12px #0005;
-cursor:pointer;
-z-index:3;
-transform:translate(-50%,-50%)
-}
-
-.dirt:after{
-content:"";
-position:absolute;
-inset:10px 16px;
-border-radius:50%;
-background:#916a4f
-}
-
-.dirt.good{
-background:#b78b00;
-box-shadow:
-0 0 0 4px #ffd34d66,
-0 7px 12px #0005
-}
-
-.dirt.good:after{
-background:#ffe16a
-}
-
-.dirt:active{
-transform:translate(-50%,-50%) scale(.85)
-}
-
-/* 得点表示 */
-
-.spark{
-position:absolute;
-pointer-events:none;
-font-size:25px;
-font-weight:900;
-z-index:5;
-animation:pop .55s forwards
-}
-
-@keyframes pop{
-0%{
-opacity:1;
-transform:translate(-50%,-50%) scale(.8)
-}
-100%{
-opacity:0;
-transform:translate(-50%,-120px) scale(1.2)
-}
-}
-
-/* 結果画面 */
-
-.overlay{
-position:absolute;
-inset:0;
-background:#061120e8;
-display:none;
-align-items:center;
-justify-content:center;
-padding:18px;
-z-index:20
-}
-
-.panel{
-width:min(92%,620px);
-background:#193455;
-border:5px solid #4b78a3;
-border-radius:28px;
-padding:25px 18px;
-text-align:center
-}
-
-.panel h2{
-font-size:34px;
-margin:0 0 8px
-}
-
-.finalScore{
-font-size:clamp(55px,15vw,100px);
-font-weight:900;
-color:#ffc83d;
-line-height:1.05
-}
-
-/* ランキング */
-
-.rank{
-background:#0b1c33;
-border-radius:20px;
-padding:15px;
-margin-top:18px;
-text-align:left
-}
-
-.rank h3{
-text-align:center;
-margin:2px 0 10px;
-font-size:23px
-}
-
-.rankrow{
-display:flex;
-justify-content:space-between;
-padding:10px 4px;
-border-bottom:1px solid #ffffff22;
-font-weight:800
-}
-
-.rankrow:last-child{
-border-bottom:0
-}
-
-input{
-width:100%;
-font-size:18px;
-padding:13px;
-border:0;
-border-radius:14px;
-margin:12px 0
+body{
+  overflow-x:hidden;
 }
 
 button{
-border:0;
-border-radius:16px;
-padding:15px 22px;
-font-size:19px;
-font-weight:900;
-background:#4fdda0;
-color:#052017
+  font:inherit;
+  border:0;
+  cursor:pointer;
 }
 
-.hint{
-text-align:center;
-color:#9fb5cf;
-font-size:13px;
-margin:8px
+.container{
+  width:min(900px,100%);
+  margin:auto;
+  padding:14px;
 }
 
-@media(max-width:600px){
+h1{
+  text-align:center;
+  margin:5px 0 3px;
+  font-size:clamp(25px,6vw,48px);
+  font-weight:900;
+}
 
-body{padding:6px}
+.subtitle{
+  text-align:center;
+  color:#dbe7f7;
+  font-weight:800;
+  font-size:clamp(14px,3.8vw,24px);
+  margin-bottom:15px;
+}
+
+.hud{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.hudBox{
+  background:#162a46;
+  border-radius:18px;
+  padding:12px 5px;
+  text-align:center;
+}
+
+.hudNum{
+  font-size:clamp(22px,6vw,40px);
+  font-weight:900;
+  line-height:1.1;
+}
+
+.hudLabel{
+  font-size:clamp(11px,2.7vw,17px);
+  color:#dbe7f7;
+  font-weight:700;
+  margin-top:4px;
+}
 
 .game{
-height:70vh;
-min-height:500px
+  position:relative;
+  width:100%;
+  height:min(78vh,720px);
+  min-height:500px;
+  border:5px solid #35587d;
+  border-radius:28px;
+  overflow:hidden;
+  touch-action:manipulation;
+  box-shadow:0 10px 35px rgba(0,0,0,.25);
+}
+
+/* ステージ背景 */
+.game.kitchen{
+  background:
+    linear-gradient(135deg,#fff1c9 0 48%,#d7ba87 48% 100%);
+}
+
+.game.bath{
+  background:
+    linear-gradient(135deg,#d9f7ff,#8ccde0);
+}
+
+.game.window{
+  background:
+    linear-gradient(180deg,#8fd6ff 0 45%,#cdefff 45% 100%);
+}
+
+.game.room{
+  background:
+    linear-gradient(135deg,#f4e3cf,#c69a70);
+}
+
+.game.floor{
+  background:
+    linear-gradient(135deg,#d8c4a4,#94724f);
+}
+
+.sceneTitle{
+  position:absolute;
+  top:16px;
+  left:20px;
+  z-index:5;
+  color:rgba(30,40,50,.48);
+  font-size:clamp(18px,5vw,30px);
+  font-weight:900;
+  pointer-events:none;
 }
 
 .dirt{
-width:57px;
-height:39px
+  position:absolute;
+  width:58px;
+  height:42px;
+  border-radius:50%;
+  background:#70401f;
+  box-shadow:
+    inset 0 -5px 0 rgba(0,0,0,.13),
+    0 8px 12px rgba(0,0,0,.20);
+  transform:translate(-50%,-50%) rotate(var(--r));
+  z-index:10;
+  animation:appear .18s ease-out;
 }
 
-.roomTitle{
-font-size:21px
+.dirt:after{
+  content:"";
+  position:absolute;
+  width:45%;
+  height:40%;
+  left:28%;
+  top:20%;
+  border-radius:50%;
+  background:#936c50;
+}
+
+.dirt.yellow{
+  background:#b68408;
+  box-shadow:
+    inset 0 -5px 0 rgba(0,0,0,.15),
+    0 8px 12px rgba(0,0,0,.20);
+}
+
+.dirt.yellow:after{
+  background:#ffd94a;
+}
+
+.dirt.blue{
+  background:#385d73;
+  border:4px solid #9be8ff;
+  box-shadow:0 0 18px rgba(90,210,255,.65);
+}
+
+.dirt.blue:after{
+  background:#66889b;
+}
+
+.dirt.green{
+  background:#355c2c;
+  border:3px solid #79c95d;
+}
+
+.dirt.green:after{
+  background:#4f8245;
+}
+
+@keyframes appear{
+  from{
+    transform:translate(-50%,-50%) scale(.2) rotate(var(--r));
+    opacity:0;
+  }
+  to{
+    transform:translate(-50%,-50%) scale(1) rotate(var(--r));
+    opacity:1;
+  }
+}
+
+.hit{
+  animation:hit .15s ease-out;
+}
+
+@keyframes hit{
+  0%{transform:translate(-50%,-50%) scale(1);}
+  50%{transform:translate(-50%,-50%) scale(1.3);}
+  100%{transform:translate(-50%,-50%) scale(0);}
+}
+
+.flash{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:50;
+  opacity:0;
+}
+
+.flash.bad{
+  background:rgba(255,50,50,.25);
+  animation:flash .25s;
+}
+
+.flash.good{
+  background:rgba(50,255,150,.12);
+  animation:flash .18s;
+}
+
+@keyframes flash{
+  0%{opacity:1;}
+  100%{opacity:0;}
+}
+
+/* スタート・結果画面 */
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  background:rgba(4,14,28,.94);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
 }
 
 .panel{
-padding:22px 14px
+  width:min(720px,100%);
+  background:#193655;
+  border:5px solid #426b96;
+  border-radius:30px;
+  padding:35px 25px;
+  text-align:center;
+  box-shadow:0 20px 70px rgba(0,0,0,.45);
 }
 
+.panel h2{
+  font-size:clamp(32px,9vw,58px);
+  margin:8px 0 18px;
+}
+
+.panel p{
+  color:#dbe7f7;
+  font-size:clamp(15px,4vw,21px);
+  line-height:1.7;
+  font-weight:700;
+}
+
+.bigScore{
+  color:#ffc94d;
+  font-size:clamp(48px,14vw,90px);
+  font-weight:900;
+  margin:15px 0;
+}
+
+.mainButton{
+  display:block;
+  width:min(430px,100%);
+  margin:22px auto 0;
+  padding:18px 20px;
+  border-radius:18px;
+  background:#4bd99a;
+  color:#062218;
+  font-size:clamp(20px,5vw,28px);
+  font-weight:900;
+}
+
+.mainButton:active{
+  transform:scale(.97);
+}
+
+.hidden{
+  display:none !important;
+}
+
+/* ランキング */
+.rankBox{
+  background:#0c1d35;
+  border-radius:20px;
+  padding:18px;
+  margin-top:20px;
+  text-align:left;
+}
+
+.rankTitle{
+  text-align:center;
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.rankRow{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 5px;
+  border-bottom:1px solid #294360;
+  font-size:17px;
+  font-weight:800;
+}
+
+.rankRow:last-child{
+  border-bottom:0;
+}
+
+.nameInput{
+  width:100%;
+  padding:15px;
+  border:0;
+  border-radius:14px;
+  font-size:18px;
+  text-align:center;
+  margin-top:10px;
+}
+
+.notice{
+  min-height:28px;
+  text-align:center;
+  font-weight:900;
+  font-size:18px;
+  margin:7px 0;
+}
+
+.badText{
+  color:#ff7070;
+}
+
+.goodText{
+  color:#64e6a8;
+}
+
+@media(max-width:600px){
+  .container{
+    padding:10px;
+  }
+
+  .hud{
+    gap:7px;
+  }
+
+  .hudBox{
+    border-radius:14px;
+    padding:10px 3px;
+  }
+
+  .game{
+    min-height:560px;
+    height:72vh;
+    border-width:4px;
+    border-radius:22px;
+  }
+
+  .dirt{
+    width:54px;
+    height:39px;
+  }
+
+  .panel{
+    padding:25px 18px;
+    border-radius:24px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>🧹 美装職人！クリーンマスター</h1>
+<div class="container">
 
-<div class="sub">
-🐉 龍＆🐶わんこと競争！誰でも遊べる掃除ゲーム 🔥
-</div>
+  <h1>🧹 美装職人！クリーンマスター</h1>
 
-<div class="hud">
+  <div class="subtitle">
+    🐉 龍＆🐶わんこと競争！誰でも遊べる掃除ゲーム 🔥
+  </div>
 
-<div class="box">
-<div class="num" id="stage">1</div>
-<div class="lab">ステージ</div>
-</div>
+  <div class="hud">
+    <div class="hudBox">
+      <div class="hudNum" id="stage">1</div>
+      <div class="hudLabel">ステージ</div>
+    </div>
 
-<div class="box">
-<div class="num" id="time">45</div>
-<div class="lab">残り時間</div>
-</div>
+    <div class="hudBox">
+      <div class="hudNum" id="time">30</div>
+      <div class="hudLabel">残り時間</div>
+    </div>
 
-<div class="box">
-<div class="num" id="score">0</div>
-<div class="lab">スコア</div>
-</div>
+    <div class="hudBox">
+      <div class="hudNum" id="score">0</div>
+      <div class="hudLabel">スコア</div>
+    </div>
 
-<div class="box">
-<div class="num" id="combo">0</div>
-<div class="lab">コンボ</div>
-</div>
+    <div class="hudBox">
+      <div class="hudNum" id="combo">0</div>
+      <div class="hudLabel">コンボ</div>
+    </div>
+  </div>
 
-</div>
+  <div class="notice" id="notice"></div>
 
-
-<div class="game" id="game">
-
-<div class="room kitchen" id="room">
-
-<div class="roomTitle" id="roomTitle">
-🍳 KITCHEN
-</div>
+  <div class="game kitchen" id="game">
+    <div class="sceneTitle" id="sceneTitle">🔍 KITCHEN</div>
+    <div class="flash" id="flash"></div>
+  </div>
 
 </div>
 
 
-<div class="overlay" id="overlay">
+<!-- スタート画面 -->
+<div class="overlay" id="startOverlay">
+  <div class="panel">
 
-<div class="panel">
+    <div style="font-size:70px;">🧹</div>
 
-<div style="font-size:55px">
-🏆
-</div>
+    <h2>クリーンマスター</h2>
 
-<h2 id="endTitle">
-ゲーム終了！
-</h2>
+    <p>
+      汚れを見つけてタップ！<br>
+      正しい汚れを消すと得点＆コンボアップ！<br>
+      間違えると<strong style="color:#ff7070;">−500点</strong>！
+    </p>
 
-<div>
-あなたのスコア
-</div>
+    <p>
+      全5ステージを制限時間内に攻略しよう🔥
+    </p>
 
-<div class="finalScore" id="finalScore">
-0
-</div>
+    <button class="mainButton" id="startButton">
+      ▶ スタート
+    </button>
 
-
-<div class="rank">
-
-<h3>
-🏆 あなたのランキング
-</h3>
-
-<div id="ranking">
-</div>
-
+  </div>
 </div>
 
 
-<input
-id="name"
-maxlength="12"
-placeholder="名前を入力（例：リュウタ）"
->
+<!-- 結果画面 -->
+<div class="overlay hidden" id="resultOverlay">
+  <div class="panel">
 
+    <div style="font-size:65px;">🏆</div>
 
-<button id="saveBtn">
-ランキングに登録
-</button>
+    <h2>ゲーム終了！</h2>
 
+    <div>あなたのスコア</div>
 
-<button
-id="againBtn"
-style="margin-left:5px;background:#55b9ff"
->
-もう一度！
-</button>
+    <div class="bigScore" id="finalScore">0点</div>
 
-</div>
+    <div id="rankArea"></div>
 
-</div>
+    <button class="mainButton" id="retryButton">
+      もう一度！
+    </button>
 
-</div>
-
-
-<div class="hint">
-汚れをタップ！間違えたら−500点。汚れを全部消しても時間までは同じステージ！
+  </div>
 </div>
 
 
 <script>
-
 "use strict";
 
-
 /* =========================
-ステージ設定
+   基本設定
 ========================= */
 
-const STAGES=[
+const TOTAL_STAGES = 5;
 
-{
-name:"🍳 KITCHEN",
-className:"kitchen",
-time:45,
-count:18
-},
-
-{
-name:"🛁 BATHROOM",
-className:"bath",
-time:42,
-count:22
-},
-
-{
-name:"🪟 WINDOW",
-className:"window",
-time:40,
-count:26
-},
-
-{
-name:"🛋️ LIVING ROOM",
-className:"living",
-time:38,
-count:30
-},
-
-{
-name:"💻 OFFICE",
-className:"office",
-time:36,
-count:34
-}
-
+const STAGES = [
+  {
+    name:"🔍 KITCHEN",
+    className:"kitchen",
+    time:30,
+    dirtCount:16
+  },
+  {
+    name:"🛁 BATH",
+    className:"bath",
+    time:28,
+    dirtCount:19
+  },
+  {
+    name:"🪟 WINDOW",
+    className:"window",
+    time:27,
+    dirtCount:22
+  },
+  {
+    name:"🛋️ ROOM",
+    className:"room",
+    time:25,
+    dirtCount:25
+  },
+  {
+    name:"🧹 FLOOR",
+    className:"floor",
+    time:23,
+    dirtCount:28
+  }
 ];
 
 
 /* =========================
-変数
+   状態
 ========================= */
 
-let stage=0;
+let stage = 1;
+let timeLeft = 30;
+let score = 0;
+let combo = 0;
 
-let score=0;
+let playing = false;
+let timer = null;
+let refillTimer = null;
 
-let combo=0;
-
-let remaining=0;
-
-let dirty=0;
-
-let playing=false;
-
-let timer=null;
+let remainingDirt = 0;
 
 
 /* =========================
-HTML
+   DOM
 ========================= */
 
-const game=
-document.getElementById("game");
+const game = document.getElementById("game");
+const stageEl = document.getElementById("stage");
+const timeEl = document.getElementById("time");
+const scoreEl = document.getElementById("score");
+const comboEl = document.getElementById("combo");
+const sceneTitle = document.getElementById("sceneTitle");
+const notice = document.getElementById("notice");
+const flash = document.getElementById("flash");
 
-const room=
-document.getElementById("room");
+const startOverlay = document.getElementById("startOverlay");
+const resultOverlay = document.getElementById("resultOverlay");
 
-const roomTitle=
-document.getElementById("roomTitle");
+const startButton = document.getElementById("startButton");
+const retryButton = document.getElementById("retryButton");
 
-const overlay=
-document.getElementById("overlay");
+const finalScore = document.getElementById("finalScore");
+const rankArea = document.getElementById("rankArea");
 
 
 /* =========================
-表示
+   表示更新
 ========================= */
 
 function updateHUD(){
-
-document.getElementById("stage")
-.textContent=stage+1;
-
-document.getElementById("time")
-.textContent=Math.ceil(remaining);
-
-document.getElementById("score")
-.textContent=
-Math.max(0,score)
-.toLocaleString();
-
-document.getElementById("combo")
-.textContent=combo;
-
+  stageEl.textContent = stage;
+  timeEl.textContent = timeLeft;
+  scoreEl.textContent = Math.max(0,score).toLocaleString();
+  comboEl.textContent = combo;
 }
 
 
 /* =========================
-汚れを消す
+   メッセージ
+========================= */
+
+function showNotice(text,type=""){
+  notice.textContent = text;
+  notice.className = "notice " + type;
+
+  setTimeout(()=>{
+    if(notice.textContent === text){
+      notice.textContent = "";
+    }
+  },700);
+}
+
+
+/* =========================
+   背景
+========================= */
+
+function setBackground(){
+  game.className = "game " + STAGES[stage-1].className;
+  sceneTitle.textContent = STAGES[stage-1].name;
+}
+
+
+/* =========================
+   汚れを全部消す
 ========================= */
 
 function clearDirt(){
-
-room
-.querySelectorAll(".dirt,.spark")
-.forEach(function(el){
-
-el.remove();
-
-});
-
+  document.querySelectorAll(".dirt").forEach(el=>el.remove());
+  remainingDirt = 0;
 }
 
 
 /* =========================
-汚れ配置
+   ランダム位置
 ========================= */
 
-function spawnDirt(){
+function randomPosition(){
 
-clearDirt();
+  /*
+    上下左右に余白を作る。
+    スマホでも画面外に出にくくする。
+  */
 
-dirty=
-STAGES[stage].count;
+  const x = 7 + Math.random() * 86;
+  const y = 9 + Math.random() * 84;
 
-
-/*
-大量配置
-*/
-
-for(
-let i=0;
-i<dirty;
-i++
-){
-
-const dirt=
-document.createElement("div");
-
-
-/*
-約20%は高得点汚れ
-*/
-
-if(
-Math.random()<0.2
-){
-
-dirt.className=
-"dirt good";
-
-dirt.dataset.point=
-"1500";
-
-}else{
-
-dirt.className=
-"dirt";
-
-dirt.dataset.point=
-"1000";
-
-}
-
-
-/*
-ランダム位置
-*/
-
-dirt.style.left=
-(7+Math.random()*86)+"%";
-
-dirt.style.top=
-(9+Math.random()*82)+"%";
-
-
-/*
-タップ
-*/
-
-dirt.addEventListener(
-"pointerdown",
-function(e){
-
-e.preventDefault();
-
-e.stopPropagation();
-
-if(!playing)return;
-
-if(dirt.dataset.hit)return;
-
-dirt.dataset.hit="1";
-
-
-/*
-コンボ
-*/
-
-combo++;
-
-
-/*
-加点
-*/
-
-let point=
-Number(dirt.dataset.point);
-
-point+=
-Math.min(
-combo*100,
-1500
-);
-
-score+=point;
-
-dirty--;
-
-
-/*
-表示
-*/
-
-showPopup(
-e.clientX,
-e.clientY,
-"+"+point,
-true
-);
-
-
-/*
-削除
-*/
-
-dirt.remove();
-
-
-updateHUD();
-
-
-/*
-全部消した場合
-同じステージで
-新しい汚れを追加
-*/
-
-if(dirty<=0){
-
-setTimeout(
-function(){
-
-if(
-playing &&
-remaining>0
-){
-
-spawnDirt();
-
-}
-
-},
-250
-);
-
-}
-
-});
-
-
-room.appendChild(dirt);
-
-}
-
+  return {x,y};
 }
 
 
 /* =========================
-ポップアップ
+   汚れ生成
 ========================= */
 
-function showPopup(
-x,
-y,
-text,
-good
-){
+function createDirt(count){
 
-const rect=
-game.getBoundingClientRect();
+  const colors = ["","", "", "yellow","blue"];
 
+  for(let i=0;i<count;i++){
 
-const el=
-document.createElement("div");
+    const dirt = document.createElement("div");
 
+    dirt.className = "dirt";
 
-el.className="spark";
+    const color =
+      colors[Math.floor(Math.random()*colors.length)];
 
+    if(color){
+      dirt.classList.add(color);
+    }
 
-el.textContent=text;
+    const pos = randomPosition();
 
+    dirt.style.left = pos.x + "%";
+    dirt.style.top = pos.y + "%";
 
-el.style.left=
-(x-rect.left)+"px";
+    dirt.style.setProperty(
+      "--r",
+      ((Math.random()*40)-20) + "deg"
+    );
 
+    /*
+      クリック時にゲーム判定。
+    */
+    dirt.addEventListener("pointerdown",function(e){
 
-el.style.top=
-(y-rect.top)+"px";
+      e.preventDefault();
+      e.stopPropagation();
 
+      if(!playing) return;
 
-el.style.color=
-good
-?"#42f5a0"
-:"#ff6464";
+      cleanDirt(dirt);
 
+    });
 
-game.appendChild(el);
+    game.appendChild(dirt);
 
-
-setTimeout(
-function(){
-
-el.remove();
-
-},
-550
-);
-
+    remainingDirt++;
+  }
 }
 
 
 /* =========================
-空振り
+   汚れを掃除
 ========================= */
 
-game.addEventListener(
-"pointerdown",
-function(e){
+function cleanDirt(dirt){
 
-if(!playing)return;
+  if(!dirt || !dirt.isConnected) return;
 
+  /*
+    正解
+  */
 
-/*
-汚れを押した場合は
-無視
-*/
+  combo++;
 
-if(
-e.target.classList.contains("dirt")
-){
+  /*
+    基本点
+    コンボが高いほど少し増える
+  */
 
-return;
+  const gain = 300 + Math.min(combo,20)*50;
 
+  score += gain;
+
+  remainingDirt--;
+
+  dirt.classList.add("hit");
+
+  flash.className = "flash good";
+
+  setTimeout(()=>{
+    if(dirt.isConnected){
+      dirt.remove();
+    }
+  },120);
+
+  showNotice("✨ +" + gain + "点","goodText");
+
+  updateHUD();
+
+  /*
+    汚れが少なくなったら追加。
+    すぐステージ変更はしない。
+  */
+
+  if(remainingDirt <= 4){
+    setTimeout(()=>{
+      if(playing && timeLeft > 0){
+        createDirt(8 + stage * 2);
+      }
+    },250);
+  }
 }
 
 
-/*
-減点
-*/
+/* =========================
+   ゲーム画面の空白をタップ
+========================= */
 
-score-=500;
+game.addEventListener("pointerdown",function(e){
 
+  if(!playing) return;
 
-/*
-0未満禁止
-*/
+  /*
+    汚れ自身のクリックは stopPropagation
+    されるのでここには来ない。
+    つまりここに来たらミス。
+  */
 
-if(score<0){
+  combo = 0;
 
-score=0;
+  score -= 500;
 
-}
+  /*
+    スコアはマイナス表示にしない。
+  */
 
+  if(score < 0){
+    score = 0;
+  }
 
-/*
-コンボリセット
-*/
+  flash.className = "flash bad";
 
-combo=0;
+  showNotice("❌ ミス！ −500点","badText");
 
-
-showPopup(
-e.clientX,
-e.clientY,
-"-500",
-false
-);
-
-
-updateHUD();
-
+  updateHUD();
 });
 
 
 /* =========================
-ステージ開始
+   ステージ開始
 ========================= */
 
 function startStage(){
 
-const config=
-STAGES[stage];
+  clearDirt();
 
+  setBackground();
 
-playing=true;
+  const data = STAGES[stage-1];
 
+  timeLeft = data.time;
 
-remaining=
-config.time;
+  /*
+    ステージ開始時は多めに汚れを配置。
+  */
 
+  createDirt(data.dirtCount);
 
-combo=0;
+  updateHUD();
 
+  showNotice(
+    "🔥 STAGE " + stage + " START!",
+    "goodText"
+  );
 
-/*
-背景変更
-*/
+  /*
+    追加生成。
+    全部消しても時間が残っている限り続く。
+  */
 
-room.className=
-"room "+config.className;
+  clearInterval(refillTimer);
 
+  refillTimer = setInterval(()=>{
 
-roomTitle.textContent=
-config.name;
+    if(!playing) return;
 
+    if(timeLeft <= 0) return;
 
-/*
-汚れ
-*/
+    /*
+      画面の汚れが少なくなったら追加。
+    */
 
-spawnDirt();
+    if(remainingDirt < 8){
+      createDirt(7 + stage * 2);
+    }
 
-
-updateHUD();
-
-
-/*
-タイマー
-*/
-
-clearInterval(timer);
-
-
-timer=
-setInterval(
-function(){
-
-if(!playing)return;
-
-
-remaining-=0.1;
-
-
-if(remaining<=0){
-
-remaining=0;
-
-updateHUD();
-
-nextStage();
-
-}else{
-
-updateHUD();
-
-}
-
-},
-100
-);
-
+  },1600);
 }
 
 
 /* =========================
-次ステージ
+   タイマー
+========================= */
+
+function startTimer(){
+
+  clearInterval(timer);
+
+  timer = setInterval(()=>{
+
+    if(!playing) return;
+
+    timeLeft--;
+
+    if(timeLeft < 0){
+      timeLeft = 0;
+    }
+
+    updateHUD();
+
+    if(timeLeft <= 0){
+
+      clearInterval(timer);
+      clearInterval(refillTimer);
+
+      /*
+        ステージ終了
+      */
+
+      setTimeout(()=>{
+        nextStage();
+      },350);
+    }
+
+  },1000);
+}
+
+
+/* =========================
+   次のステージ
 ========================= */
 
 function nextStage(){
 
-if(!playing)return;
+  if(!playing) return;
 
+  if(stage >= TOTAL_STAGES){
 
-playing=false;
+    finishGame();
 
-clearInterval(timer);
+    return;
+  }
 
+  stage++;
 
-if(
-stage<STAGES.length-1
-){
+  startStage();
 
-stage++;
+  /*
+    タイマーを再スタート。
+  */
 
-startStage();
-
-}else{
-
-endGame();
-
-}
-
+  startTimer();
 }
 
 
 /* =========================
-ゲーム終了
+   ゲーム開始
 ========================= */
 
-function endGame(){
+function startGame(){
 
-playing=false;
+  clearInterval(timer);
+  clearInterval(refillTimer);
 
-clearInterval(timer);
+  stage = 1;
+  score = 0;
+  combo = 0;
 
+  playing = true;
 
-document.getElementById(
-"finalScore"
-).textContent=
-score.toLocaleString()+"点";
+  startOverlay.classList.add("hidden");
+  resultOverlay.classList.add("hidden");
 
+  startStage();
+  startTimer();
 
-document.getElementById(
-"endTitle"
-).textContent=
-"🎉 全ステージ終了！";
-
-
-renderRanking();
-
-
-overlay.style.display=
-"flex";
-
+  updateHUD();
 }
 
 
 /* =========================
-ランキング取得
+   ランキング取得
 ========================= */
 
 function getRanking(){
 
-try{
+  try{
 
-return JSON.parse(
-localStorage.getItem(
-"cleanMasterRanking"
-)||"[]"
-);
+    const data =
+      JSON.parse(localStorage.getItem("cleanMasterRanking") || "[]");
 
-}catch(e){
+    if(Array.isArray(data)){
+      return data;
+    }
 
-return[];
+  }catch(e){}
 
-}
-
-}
-
-
-/* =========================
-HTMLエスケープ
-========================= */
-
-function escapeHTML(text){
-
-return String(text)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
+  return [];
 }
 
 
 /* =========================
-ランキング表示
+   ランキング保存
 ========================= */
 
-function renderRanking(){
+function saveRanking(){
 
-const list=
-getRanking();
+  const ranking = getRanking();
 
+  ranking.push({
+    name:"リュウタ",
+    score:score,
+    date:new Date().toLocaleDateString("ja-JP")
+  });
 
-const box=
-document.getElementById("ranking");
+  ranking.sort((a,b)=>b.score-a.score);
 
+  const top10 = ranking.slice(0,10);
 
-if(list.length===0){
+  try{
+    localStorage.setItem(
+      "cleanMasterRanking",
+      JSON.stringify(top10)
+    );
+  }catch(e){}
 
-box.innerHTML=
-'<div style="text-align:center;color:#9fb5cf">まだランキングがありません</div>';
-
-return;
-
-}
-
-
-box.innerHTML=
-list
-.slice(0,10)
-.map(
-function(item,index){
-
-return `
-<div class="rankrow">
-
-<span>
-${index+1}位 ${escapeHTML(item.name)}
-</span>
-
-<span>
-${Number(item.score).toLocaleString()}点
-</span>
-
-</div>
-`;
-
-}
-)
-.join("");
-
+  return top10;
 }
 
 
 /* =========================
-ランキング登録
+   ランキング表示
 ========================= */
 
-document
-.getElementById("saveBtn")
-.addEventListener(
-"click",
-function(){
+function renderRanking(ranking){
 
-const input=
-document.getElementById("name");
+  let html = `
+    <div class="rankBox">
+      <div class="rankTitle">🏆 あなたのランキング</div>
+  `;
+
+  if(ranking.length === 0){
+
+    html += `
+      <div class="rankRow">
+        <span>まだ記録なし</span>
+        <span>-</span>
+      </div>
+    `;
+
+  }else{
+
+    ranking.forEach((item,index)=>{
+
+      let medal = "";
+
+      if(index === 0) medal = "🥇";
+      else if(index === 1) medal = "🥈";
+      else if(index === 2) medal = "🥉";
+      else medal = (index+1) + "位";
+
+      html += `
+        <div class="rankRow">
+          <span>${medal} ${escapeHTML(item.name)}</span>
+          <span>${Number(item.score).toLocaleString()}点</span>
+        </div>
+      `;
+
+    });
+
+  }
+
+  html += `</div>`;
+
+  rankArea.innerHTML = html;
+}
 
 
-const name=
-(
-input.value.trim()
-||
-"リュウタ"
-).slice(0,12);
+/* =========================
+   HTMLエスケープ
+========================= */
+
+function escapeHTML(str){
+
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
 
 
-const list=
-getRanking();
+/* =========================
+   ゲーム終了
+========================= */
+
+function finishGame(){
+
+  playing = false;
+
+  clearInterval(timer);
+  clearInterval(refillTimer);
+
+  clearDirt();
+
+  finalScore.textContent =
+    Math.max(0,score).toLocaleString() + "点";
+
+  const ranking = saveRanking();
+
+  renderRanking(ranking);
+
+  resultOverlay.classList.remove("hidden");
+}
 
 
-list.push({
+/* =========================
+   ボタン
+========================= */
 
-name:name,
+startButton.addEventListener("click",function(){
 
-score:score
+  startGame();
 
 });
 
 
-list.sort(
-function(a,b){
+retryButton.addEventListener("click",function(){
 
-return b.score-a.score;
-
-});
-
-
-localStorage.setItem(
-"cleanMasterRanking",
-JSON.stringify(
-list.slice(0,10)
-)
-);
-
-
-renderRanking();
-
-
-this.textContent=
-"登録しました！";
-
-});
-
-
-/* =========================
-もう一度
-========================= */
-
-document
-.getElementById("againBtn")
-.addEventListener(
-"click",
-function(){
-
-overlay.style.display=
-"none";
-
-
-stage=0;
-
-score=0;
-
-combo=0;
-
-remaining=0;
-
-dirty=0;
-
-
-startStage();
+  startGame();
 
 });
 
 
 /* =========================
-ゲーム起動
+   初期状態
 ========================= */
 
-window.addEventListener(
-"load",
-function(){
+function init(){
 
-startStage();
+  /*
+    最初は絶対にゲームを開始しない。
+    スタート画面を表示。
+  */
 
-});
+  playing = false;
+
+  clearInterval(timer);
+  clearInterval(refillTimer);
+
+  clearDirt();
+
+  stage = 1;
+  timeLeft = STAGES[0].time;
+  score = 0;
+  combo = 0;
+
+  setBackground();
+  updateHUD();
+
+  startOverlay.classList.remove("hidden");
+  resultOverlay.classList.add("hidden");
+}
+
+
+/* =========================
+   起動
+========================= */
+
+init();
 
 </script>
 
