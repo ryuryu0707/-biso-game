@@ -1,2274 +1,944 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-
 <title>美装職人！クリーンマスター</title>
-
 <style>
-:root{
-  --bg:#061426;
-  --panel:#173457;
-  --panel2:#0b203b;
-  --line:#4f83b6;
-  --gold:#ffc83d;
-  --green:#48dfa0;
-  --red:#ff6670;
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#061323;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;overflow-x:hidden}
+body{padding:12px 10px 30px}
+button{font:inherit}
+h1{text-align:center;font-size:clamp(25px,7vw,40px);line-height:1.1;margin:5px 0 6px;font-weight:900}
+.sub{text-align:center;color:#dce8f7;font-weight:800;font-size:clamp(14px,4vw,20px);margin-bottom:14px}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:920px;margin:auto}
+.box{background:#162f52;border:1px solid #274b76;border-radius:17px;text-align:center;padding:10px 3px;box-shadow:0 5px 14px #0003}
+.num{font-size:clamp(23px,7vw,38px);font-weight:900;line-height:1.05}
+.label{font-size:12px;color:#dce8f7;margin-top:4px;font-weight:800}
+.game{position:relative;max-width:920px;height:min(720px,68vh);min-height:500px;margin:14px auto 0;border:6px solid #3e628b;border-radius:38px;overflow:hidden;touch-action:manipulation;box-shadow:inset 0 0 35px #0003}
+.stageName{position:absolute;left:22px;top:17px;z-index:8;font-size:clamp(20px,5vw,34px);font-weight:900;color:#5c7387;opacity:.75;pointer-events:none;text-shadow:0 1px #fff6}
+.decor{position:absolute;inset:0;z-index:1;pointer-events:none}
+
+.dirt{position:absolute;z-index:10;border:0;padding:0;cursor:pointer;touch-action:manipulation;filter:drop-shadow(0 6px 5px #0004);transition:transform .08s,opacity .12s}
+.dirt:active{transform:scale(.82)}
+.dirt.dust{width:64px;height:45px;border-radius:50%;background:#694024}
+.dirt.grease{width:68px;height:48px;border-radius:50%;background:#c89108;box-shadow:inset 0 0 0 5px #8d6500}
+.dirt.mold{width:70px;height:48px;border-radius:50%;background:#4d9b46;box-shadow:inset 0 0 0 5px #286a32}
+.dirt.water{width:64px;height:64px;border-radius:50%;background:#57b9e8;box-shadow:inset 0 0 0 5px #2384b5}
+.dirt.scale{width:70px;height:48px;border-radius:50%;background:#e9eef2;box-shadow:inset 0 0 0 4px #aeb9c2}
+.dirt.hard{width:82px;height:58px;border-radius:48%;background:#542a1d;outline:5px solid #ff7149}
+.dirt::after{content:"";position:absolute;inset:11px 19px;background:#a16d4b;border-radius:50%;opacity:.7}
+.dirt.grease::after{background:#ffe36c}
+.dirt.mold::after{background:#8dd66f}
+.dirt.water::after{background:#bcefff}
+.dirt.scale::after{background:#fff}
+.dirt.hard::after{background:#873b2d}
+
+.float{position:absolute;z-index:30;font-weight:900;font-size:28px;color:#ffe16a;pointer-events:none;animation:float .65s ease-out forwards;text-shadow:0 2px 4px #0008}
+@keyframes float{
+0%{opacity:1;transform:translateY(0) scale(1)}
+100%{opacity:0;transform:translateY(-65px) scale(1.15)}
+}
+.flash{position:absolute;inset:0;z-index:40;pointer-events:none;animation:flash .25s ease-out}
+@keyframes flash{
+0%{background:#f33a3a55}
+100%{background:transparent}
 }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html,body{
-  margin:0;
-  min-height:100%;
-  background:var(--bg);
-  color:#fff;
-  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
-}
-
-body{
-  overflow-x:hidden;
-}
-
-button,input{
-  font:inherit;
-}
-
-button{
-  border:0;
-  cursor:pointer;
-}
-
-#app{
-  width:min(980px,100%);
-  margin:auto;
-  padding:10px 12px 24px;
-}
-
-h1{
-  margin:2px 0 2px;
-  text-align:center;
-  font-size:clamp(25px,6.5vw,46px);
-  font-weight:950;
-  line-height:1.15;
-  text-shadow:0 3px 0 #03101f;
-}
-
-.sub{
-  text-align:center;
-  font-size:clamp(13px,3.5vw,21px);
-  font-weight:850;
-  color:#dbe9f8;
-  margin:0 0 10px;
-}
-
-.hud{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:7px;
-  margin-bottom:8px;
-}
-
-.hudbox{
-  background:#173152;
-  border:2px solid #23496f;
-  border-radius:16px;
-  text-align:center;
-  padding:8px 2px;
-  box-shadow:0 7px 16px #0003;
-}
-
-.num{
-  font-size:clamp(23px,6vw,40px);
-  font-weight:950;
-  line-height:1.05;
-}
-
-.lab{
-  font-size:clamp(10px,2.7vw,15px);
-  font-weight:800;
-  color:#d9e7f7;
-  margin-top:4px;
-}
-
-.message{
-  height:28px;
-  text-align:center;
-  font-size:18px;
-  font-weight:950;
-}
-
-.good{
-  color:var(--green);
-}
-
-.bad{
-  color:var(--red);
-}
-
-
-/* =========================
-   ゲーム画面
-========================= */
-
-.game{
-  position:relative;
-  height:min(72vh,690px);
-  min-height:540px;
-  overflow:hidden;
-  border:5px solid var(--line);
-  border-radius:28px;
-  background:#ddd;
-  box-shadow:0 16px 45px #0006;
-  touch-action:manipulation;
-  isolation:isolate;
-}
-
-.scene{
-  position:absolute;
-  inset:0;
-  overflow:hidden;
-}
-
-.scene-title{
-  position:absolute;
-  top:12px;
-  left:16px;
-  z-index:20;
-  font-size:clamp(22px,5vw,34px);
-  font-weight:950;
-  color:#24384c;
-  text-shadow:0 2px #fff8;
-  pointer-events:none;
-}
-
-.object{
-  position:absolute;
-  z-index:3;
-  user-select:none;
-  pointer-events:none;
-}
-
-
-/* =========================
-   汚れ
-========================= */
-
-.dirt{
-  position:absolute;
-  z-index:30;
-  width:52px;
-  height:40px;
-  border-radius:50%;
-  background:#67391e;
-
-  box-shadow:
-    inset 0 -5px 0 #4a2715,
-    0 7px 12px #0005;
-
-  transform:
-    translate(-50%,-50%)
-    rotate(var(--r));
-
-  cursor:pointer;
-  touch-action:manipulation;
-
-  animation:pop .12s ease-out;
-}
-
-.dirt:before{
-  content:"";
-  position:absolute;
-  inset:8px 10px;
-  border-radius:50%;
-  background:#936a4e;
-}
-
-.dirt.gunk{
-  background:#8b6b16;
-}
-
-.dirt.gunk:before{
-  background:#e0b83c;
-}
-
-.dirt.mold{
-  background:#345b2c;
-  border:3px solid #75bd59;
-}
-
-.dirt.mold:before{
-  background:#5d8c4d;
-}
-
-.dirt.water{
-  background:#2b657b;
-  border:3px solid #a6ecff;
-}
-
-.dirt.water:before{
-  background:#6eafc2;
-}
-
-@keyframes pop{
-  from{
-    opacity:0;
-    transform:
-      translate(-50%,-50%)
-      scale(.2)
-      rotate(var(--r));
-  }
-
-  to{
-    opacity:1;
-    transform:
-      translate(-50%,-50%)
-      scale(1)
-      rotate(var(--r));
-  }
-}
-
-.dirt.cleaning{
-  animation:clean .16s forwards;
-}
-
-@keyframes clean{
-  50%{
-    transform:
-      translate(-50%,-50%)
-      scale(1.35)
-      rotate(var(--r));
-    opacity:1;
-  }
-
-  100%{
-    transform:
-      translate(-50%,-50%)
-      scale(0)
-      rotate(var(--r));
-    opacity:0;
-  }
-}
-
-
-/* =========================
-   KITCHEN
-========================= */
+/* ===== 5種類の部屋 ===== */
 
 .kitchen{
-  background:
-    linear-gradient(
-      #fff1cf 0 56%,
-      #d7b47b 56%
-    );
+background:linear-gradient(135deg,#fff0c5 0 43%,#d8b476 43% 100%)
 }
-
-.kitchen:before{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  top:0;
-  height:56%;
-
-  background:
-    repeating-linear-gradient(
-      90deg,
-      #fff7df 0 74px,
-      #e7d6b4 75px 77px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 54px,
-      #e7d6b4 55px 57px
-    );
-
-  opacity:.9;
+.kitchen .decor:before{
+content:"🍳   🧂   🫙";
+position:absolute;
+right:18px;
+top:16px;
+font-size:34px;
+filter:drop-shadow(0 3px 2px #0002)
 }
-
-.k-counter{
-  left:0;
-  right:0;
-  bottom:0;
-  height:31%;
-  background:#a87446;
-  border-top:10px solid #6b432b;
+.kitchen .decor:after{
+content:"▰  ▰  ▰  ▰";
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+height:85px;
+background:#8b5b37;
+color:#e5bf94;
+text-align:center;
+padding-top:20px;
+font-size:26px
 }
-
-.k-cab{
-  left:5%;
-  bottom:8%;
-  width:27%;
-  height:18%;
-  background:#e8c494;
-  border:7px solid #a56d3f;
-  border-radius:10px;
-}
-
-.k-sink{
-  right:8%;
-  top:32%;
-  width:29%;
-  height:16%;
-  background:#dceaf0;
-  border:7px solid #8aa3af;
-  border-radius:12px;
-}
-
-.k-stove{
-  left:9%;
-  top:30%;
-  width:31%;
-  height:19%;
-  background:#32383e;
-  border:7px solid #69747d;
-  border-radius:14px;
-}
-
-.burn{
-  position:absolute;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:#14191d;
-  border:7px solid #555;
-  box-shadow:inset 0 0 0 7px #24292d;
-}
-
-.burn.a{
-  left:14%;
-  top:18%;
-}
-
-.burn.b{
-  right:14%;
-  top:18%;
-}
-
-.k-fridge{
-  right:4%;
-  top:7%;
-  width:17%;
-  height:52%;
-  background:#f2f4f5;
-  border:7px solid #aab4ba;
-  border-radius:10px;
-}
-
-.handle{
-  position:absolute;
-  right:10%;
-  top:22%;
-  width:8px;
-  height:35%;
-  background:#88949b;
-  border-radius:8px;
-}
-
-
-/* =========================
-   BATH
-========================= */
 
 .bath{
-  background:linear-gradient(#bcefff,#7bc9df);
+background:linear-gradient(180deg,#b9edff 0 60%,#e7f8fb 60% 100%)
+}
+.bath .decor:before{
+content:"🛁";
+position:absolute;
+right:22px;
+bottom:40px;
+font-size:145px;
+opacity:.72
+}
+.bath .decor:after{
+content:"🚿      🪞";
+position:absolute;
+left:18px;
+top:18px;
+font-size:42px
 }
 
-.tile{
-  position:absolute;
-  inset:0;
-
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 69px,
-      #8fd0df 70px 72px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 54px,
-      #8fd0df 55px 57px
-    );
-
-  opacity:.7;
+.aircon{
+background:linear-gradient(180deg,#dff4ff 0 56%,#aebfd0 56% 100%)
 }
-
-.tub{
-  left:4%;
-  bottom:16%;
-  width:58%;
-  height:30%;
-  background:#fff;
-  border:9px solid #8cb5c7;
-  border-radius:
-    50% 50% 18% 18% /
-    45% 45% 15% 15%;
-
-  box-shadow:
-    inset 0 16px 0 #c9eff9;
+.aircon .decor:before{
+content:"❄️";
+position:absolute;
+right:25px;
+top:22px;
+font-size:80px;
+opacity:.45
 }
-
-.waterin{
-  left:8%;
-  bottom:24%;
-  width:50%;
-  height:12%;
-  background:#71cfe8;
-  border-radius:50%;
+.aircon .decor:after{
+content:"🪑        🪴        📺";
+position:absolute;
+left:18px;
+right:18px;
+bottom:28px;
+font-size:55px;
+display:flex;
+justify-content:space-between
 }
-
-.mirror{
-  right:7%;
-  top:15%;
-  width:23%;
-  height:24%;
-  background:#d9f7ff;
-  border:8px solid #6e95a7;
-  border-radius:12px;
-}
-
-.shower{
-  right:8%;
-  top:38%;
-  width:22%;
-  height:5%;
-  background:#8da6b1;
-  border-radius:8px;
-  transform:rotate(70deg);
-}
-
-.bottle{
-  right:30%;
-  top:13%;
-  width:12%;
-  height:14%;
-  background:#e2a6bd;
-  border:4px solid #8b6680;
-  border-radius:8px;
-}
-
-.mat{
-  right:8%;
-  bottom:12%;
-  width:23%;
-  height:11%;
-  background:#68b6c7;
-  border:5px solid #4b8b9a;
-  border-radius:12px;
-}
-
-
-/* =========================
-   WINDOW
-========================= */
-
-.window{
-  background:
-    linear-gradient(
-      #7bcdf6 0 54%,
-      #d8f3ff 54%
-    );
-}
-
-.sky{
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(
-      #6fc7f3,
-      #dff6ff
-    );
-}
-
-.windowframe{
-  left:11%;
-  top:16%;
-  width:78%;
-  height:47%;
-  background:#bcecff;
-  border:12px solid #fff;
-
-  box-shadow:
-    inset 0 0 0 7px #7b9eb0;
-}
-
-.pane{
-  position:absolute;
-  background:
-    linear-gradient(
-      #8bd7ff,
-      #e5f8ff
-    );
-  inset:0;
-}
-
-.crossv{
-  position:absolute;
-  left:49%;
-  top:0;
-  bottom:0;
-  width:8px;
-  background:#fff;
-}
-
-.crossh{
-  position:absolute;
-  left:0;
-  right:0;
-  top:49%;
-  height:8px;
-  background:#fff;
-}
-
-.plant{
-  left:4%;
-  bottom:8%;
-  font-size:clamp(60px,15vw,110px);
-}
-
-.spray{
-  right:5%;
-  bottom:8%;
-  font-size:clamp(48px,12vw,90px);
-}
-
-
-/* =========================
-   ROOM
-========================= */
 
 .room{
-  background:#f1ddc7;
+background:linear-gradient(135deg,#e6d8c9 0 50%,#92755d 50% 100%)
+}
+.room .decor:before{
+content:"🛋️";
+position:absolute;
+left:25px;
+bottom:45px;
+font-size:125px;
+opacity:.9
+}
+.room .decor:after{
+content:"📺     🪴     🖼️";
+position:absolute;
+right:18px;
+top:18px;
+font-size:42px
 }
 
-.wall{
-  position:absolute;
-  inset:0 0 34%;
-  background:
-    linear-gradient(
-      #f5e7d7,
-      #e8cdb4
-    );
+.pro{
+background:linear-gradient(135deg,#eef3f8 0 48%,#aebdcd 48% 100%)
+}
+.pro .decor:before{
+content:"🧹   🪣   🧽   🧴";
+position:absolute;
+left:18px;
+right:18px;
+bottom:28px;
+font-size:45px;
+display:flex;
+justify-content:space-around;
+opacity:.9
+}
+.pro .decor:after{
+content:"✨ PROFESSIONAL CLEANING ✨";
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+font-size:25px;
+font-weight:900;
+color:#fff8;
+text-align:center;
+white-space:nowrap
 }
 
-.floorwood{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  height:36%;
+/* スタート画面 */
 
-  background:
-    repeating-linear-gradient(
-      0deg,
-      #d2a06e 0 36px,
-      #b98455 37px 40px
-    );
+#startScreen{
+position:fixed;
+inset:0;
+z-index:1000;
+background:linear-gradient(160deg,#061323,#102d50);
+display:flex;
+align-items:center;
+justify-content:center;
+padding:24px
+}
+.startCard{
+width:min(620px,94vw);
+background:#19385d;
+border:5px solid #4773a0;
+border-radius:34px;
+padding:30px 22px;
+text-align:center;
+box-shadow:0 20px 60px #0008
+}
+.startLogo{font-size:70px;line-height:1;margin-bottom:12px}
+.startCard h2{font-size:clamp(27px,8vw,44px);margin:0 0 10px}
+.startCard p{color:#dce8f7;font-weight:800;line-height:1.7;margin:8px 0 16px}
+.mainBtn{
+border:0;
+border-radius:20px;
+padding:17px 42px;
+background:#4fe09d;
+color:#062318;
+font-size:24px;
+font-weight:900;
+box-shadow:0 8px 0 #239c69;
+cursor:pointer
+}
+.mainBtn:active{
+transform:translateY(5px);
+box-shadow:0 3px 0 #239c69
 }
 
-.rug{
-  left:15%;
-  bottom:7%;
-  width:60%;
-  height:15%;
-  background:#f4f0e6;
-  border:5px solid #c4b9a5;
-  border-radius:12px;
+/* 結果 */
+
+#result{
+max-width:800px;
+margin:24px auto 0;
+background:#19385d;
+border:5px solid #4773a0;
+border-radius:34px;
+padding:28px 18px;
+text-align:center;
+display:none
 }
-
-.sofa{
-  left:18%;
-  bottom:24%;
-  width:48%;
-  height:27%;
-  background:#5eae57;
-  border:8px solid #35783a;
-  border-radius:24px 24px 15px 15px;
-
-  box-shadow:
-    inset 0 -18px 0 #4a9849;
+#result h2{
+font-size:clamp(30px,8vw,44px);
+margin:5px 0 10px
 }
-
-.sofa:before{
-  content:"";
-  position:absolute;
-  left:8%;
-  right:8%;
-  top:8%;
-  height:45%;
-  background:#73c76c;
-  border-radius:18px;
-}
-
-.table{
-  left:31%;
-  bottom:19%;
-  width:30%;
-  height:10%;
-  background:#b87438;
-  border:6px solid #7b4a26;
-  border-radius:8px;
-}
-
-.table:after{
-  content:"";
-  position:absolute;
-  left:8%;
-  right:8%;
-  bottom:-60px;
-  height:60px;
-  border-left:7px solid #7b4a26;
-  border-right:7px solid #7b4a26;
-}
-
-.tv{
-  right:6%;
-  bottom:28%;
-  width:25%;
-  height:22%;
-  background:#20282d;
-  border:7px solid #111;
-  border-radius:8px;
-}
-
-.tv:after{
-  content:"";
-  position:absolute;
-  left:12%;
-  right:12%;
-  bottom:-24px;
-  height:18px;
-  background:#79502f;
-  border-radius:5px;
-}
-
-.shelf{
-  left:4%;
-  bottom:28%;
-  width:18%;
-  height:34%;
-  background:#9b6a3d;
-  border:6px solid #6d4528;
-  border-radius:6px;
-}
-
-.shelf:after{
-  content:"📚🌿";
-  position:absolute;
-  inset:20% 8%;
-  font-size:30px;
-  line-height:1.7;
-}
-
-
-/* =========================
-   FLOOR
-========================= */
-
-.floor{
-  background:#d8a967;
-}
-
-.floorbase{
-  position:absolute;
-  inset:0;
-
-  background:
-    repeating-linear-gradient(
-      0deg,
-      #d9ad70 0 42px,
-      #b87e46 43px 47px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 115px,
-      #c68e52 116px 120px
-    );
-}
-
-.doormat{
-  right:6%;
-  bottom:8%;
-  width:28%;
-  height:14%;
-  background:#8f76c7;
-  border:6px solid #604b91;
-  border-radius:12px;
-}
-
-.bucket{
-  left:5%;
-  bottom:8%;
-  font-size:70px;
-}
-
-.broom{
-  right:2%;
-  top:8%;
-  font-size:72px;
-}
-
-
-/* =========================
-   フラッシュ
-========================= */
-
-.flash{
-  position:absolute;
-  inset:0;
-  z-index:90;
-  pointer-events:none;
-  opacity:0;
-}
-
-.flash.good{
-  background:#55ffab33;
-  animation:flash .16s;
-}
-
-.flash.bad{
-  background:#ff304044;
-  animation:flash .2s;
-}
-
-@keyframes flash{
-  from{
-    opacity:1;
-  }
-
-  to{
-    opacity:0;
-  }
-}
-
-
-/* =========================
-   オーバーレイ
-========================= */
-
-.overlay{
-  position:fixed;
-  inset:0;
-  z-index:1000;
-
-  background:#020c18ee;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:16px;
-  overflow:auto;
-}
-
-.panel{
-  width:min(720px,100%);
-
-  background:#1a395e;
-
-  border:5px solid #4e82b3;
-  border-radius:30px;
-
-  padding:24px 18px;
-
-  text-align:center;
-
-  box-shadow:
-    0 25px 80px #0008;
-}
-
-.panel h2{
-  font-size:clamp(34px,9vw,60px);
-  margin:5px 0 12px;
-}
-
-.panel p{
-  font-size:clamp(15px,4vw,20px);
-  line-height:1.65;
-  color:#e2edf8;
-  font-weight:750;
-}
-
-.startBtn{
-  width:min(470px,100%);
-  padding:18px;
-
-  border-radius:18px;
-
-  background:var(--green);
-  color:#06251a;
-
-  font-weight:950;
-  font-size:clamp(21px,5vw,30px);
-
-  margin-top:10px;
-}
-
-.startBtn:active{
-  transform:scale(.97);
-}
-
-.nameBox{
-  display:flex;
-  gap:8px;
-  max-width:470px;
-  margin:14px auto 0;
-}
-
-.nameBox input{
-  min-width:0;
-  flex:1;
-
-  border-radius:12px;
-  border:2px solid #648db5;
-
-  padding:11px 12px;
-
-  text-align:center;
-  font-weight:900;
-}
-
-.nameBox span{
-  display:flex;
-  align-items:center;
-  font-weight:850;
-}
-
-.hidden{
-  display:none!important;
-}
-
 .finalScore{
-  color:var(--gold);
-
-  font-size:clamp(52px,14vw,92px);
-
-  font-weight:950;
-
-  margin:8px 0 14px;
+font-size:clamp(52px,15vw,82px);
+font-weight:900;
+color:#ffc247;
+line-height:1
 }
-
-.rank{
-  background:#081c34;
-
-  border-radius:20px;
-
-  padding:14px;
-
-  margin:10px 0 18px;
-
-  text-align:left;
+.rankBox{
+background:#071a31;
+border-radius:24px;
+padding:18px;
+margin:20px 0;
+text-align:left
 }
-
 .rankTitle{
-  text-align:center;
-
-  font-size:clamp(20px,5vw,27px);
-
-  font-weight:950;
-
-  margin-bottom:6px;
+text-align:center;
+font-size:25px;
+font-weight:900;
+margin-bottom:12px
 }
-
 .rankRow{
-  display:grid;
+display:flex;
+justify-content:space-between;
+gap:8px;
+padding:10px 5px;
+border-bottom:1px solid #294361;
+font-weight:900
+}
+.rankRow:last-child{border-bottom:0}
+.rankMe{color:#ffd34e}
 
-  grid-template-columns:45px 1fr auto;
-
-  gap:6px;
-
-  padding:9px 2px;
-
-  border-bottom:1px solid #29435f;
-
-  font-weight:900;
+#again{
+width:min(92%,520px);
+border:0;
+border-radius:20px;
+padding:17px;
+background:#4fe09d;
+color:#062318;
+font-size:23px;
+font-weight:900;
+cursor:pointer
 }
 
-.rankRow:last-child{
-  border-bottom:0;
+#message{
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+z-index:50;
+background:#061323dd;
+padding:14px 22px;
+border-radius:16px;
+font-size:24px;
+font-weight:900;
+display:none;
+pointer-events:none;
+white-space:nowrap
 }
-
-.rankMe{
-  color:#ffd45b;
-}
-
-.hint{
-  font-size:13px;
-  color:#aec4da;
-  margin-top:8px;
-}
-
 
 @media(max-width:600px){
-
-  #app{
-    padding:8px 8px 20px;
-  }
-
-  .game{
-    min-height:560px;
-    height:69vh;
-    border-width:4px;
-    border-radius:22px;
-  }
-
-  .dirt{
-    width:50px;
-    height:38px;
-  }
-
-  .hud{
-    gap:5px;
-  }
-
-  .hudbox{
-    border-radius:13px;
-    padding:8px 1px;
-  }
-
-  .panel{
-    padding:20px 14px;
-  }
+body{padding:8px 8px 24px}
+.game{height:67vh;min-height:520px;border-radius:32px}
+.dirt.dust{width:54px;height:38px}
+.dirt.grease{width:58px;height:40px}
+.dirt.mold{width:58px;height:40px}
+.dirt.water{width:54px;height:54px}
+.dirt.scale{width:58px;height:40px}
+.dirt.hard{width:68px;height:48px}
+.pro .decor:after{font-size:17px}
+.rankRow{font-size:15px}
 }
 </style>
 </head>
 
 <body>
 
-<div id="app">
+<div id="startScreen">
+<div class="startCard">
+<div class="startLogo">🧹🐉🐶</div>
+<h2>美装職人！<br>クリーンマスター</h2>
+<p>
+5つの部屋を順番に掃除しよう！<br>
+汚れを素早くタップして高得点を狙え🔥<br>
+コンボをつなぐほど得点アップ！
+</p>
+<button id="startBtn" class="mainBtn">▶ ゲームスタート</button>
+</div>
+</div>
 
-  <h1>🧹 美装職人！クリーンマスター</h1>
+<h1>🧹 美装職人！クリーンマスター</h1>
 
-  <div class="sub">
-    🐉 龍＆🐶わんこと競争！誰でも遊べる掃除ゲーム 🔥
-  </div>
+<div class="sub">
+🐉 龍＆🐶わんこと競争！誰でも遊べる掃除ゲーム 🔥
+</div>
 
-  <div class="hud">
+<div class="hud">
+<div class="box">
+<div class="num" id="stage">1</div>
+<div class="label">ステージ</div>
+</div>
 
-    <div class="hudbox">
-      <div class="num" id="stage">1</div>
-      <div class="lab">ステージ</div>
-    </div>
+<div class="box">
+<div class="num" id="time">30</div>
+<div class="label">残り時間</div>
+</div>
 
-    <div class="hudbox">
-      <div class="num" id="time">30</div>
-      <div class="lab">残り時間</div>
-    </div>
+<div class="box">
+<div class="num" id="score">0</div>
+<div class="label">スコア</div>
+</div>
 
-    <div class="hudbox">
-      <div class="num" id="score">0</div>
-      <div class="lab">スコア</div>
-    </div>
+<div class="box">
+<div class="num" id="combo">0</div>
+<div class="label">コンボ</div>
+</div>
+</div>
 
-    <div class="hudbox">
-      <div class="num" id="combo">0</div>
-      <div class="lab">コンボ</div>
-    </div>
+<div id="game" class="game kitchen">
 
-  </div>
+<div id="stageName" class="stageName">
+🍳 KITCHEN
+</div>
 
-  <div class="message" id="message"></div>
+<div class="decor"></div>
 
-  <div class="game" id="game">
-
-    <div class="scene" id="scene"></div>
-
-    <div class="flash" id="flash"></div>
-
-  </div>
+<div id="message"></div>
 
 </div>
 
+<div id="result">
 
-<!-- =========================
-     スタート画面
-========================= -->
+<div style="font-size:62px">🏆</div>
 
-<div class="overlay" id="startOverlay">
+<h2>ゲーム終了！</h2>
 
-  <div class="panel">
+<div style="font-weight:800">
+あなたのスコア
+</div>
 
-    <div style="font-size:66px">
-      🧹
-    </div>
+<div id="finalScore" class="finalScore">
+0点
+</div>
 
-    <h2>
-      クリーンマスター
-    </h2>
+<div class="rankBox">
 
-    <p>
-      部屋の<strong style="color:#ffd35a">本物っぽい汚れ</strong>を
-      タップして掃除！
-      <br>
-      汚れが減ると次の汚れが出てくるので、
-      時間を無駄にしません🔥
-      <br>
-      空振りタップは
-      <strong style="color:#ff7a82">
-        −300点
-      </strong>
-      です。
-    </p>
+<div class="rankTitle">
+🏆 あなたのランキング
+</div>
 
-    <div class="nameBox">
-
-      <span>
-        名前
-      </span>
-
-      <input
-        id="playerName"
-        maxlength="10"
-        value="リュウタ"
-        autocomplete="off"
-      >
-
-    </div>
-
-    <button
-      class="startBtn"
-      id="startBtn"
-    >
-      ▶ スタート
-    </button>
-
-    <div class="hint">
-      全5ステージ・スマホのタップ操作対応
-    </div>
-
-  </div>
+<div id="ranking"></div>
 
 </div>
 
-
-<!-- =========================
-     結果画面
-========================= -->
-
-<div
-  class="overlay hidden"
-  id="resultOverlay"
->
-
-  <div class="panel">
-
-    <div style="font-size:62px">
-      🏆
-    </div>
-
-    <h2>
-      ゲーム終了！
-    </h2>
-
-    <div style="font-weight:850">
-      あなたのスコア
-    </div>
-
-    <div
-      class="finalScore"
-      id="finalScore"
-    >
-      0点
-    </div>
-
-    <div
-      class="rank"
-      id="ranking"
-    ></div>
-
-    <button
-      class="startBtn"
-      id="againBtn"
-    >
-      もう一度！
-    </button>
-
-  </div>
+<button id="again">
+もう一度！
+</button>
 
 </div>
-
 
 <script>
-
 "use strict";
 
-
-/* =========================
-   ステージ設定
-========================= */
-
-const STAGES = [
-
-  {
-    name:"🍳 KITCHEN",
-    cls:"kitchen",
-    time:30,
-    target:24,
-    initial:16
-  },
-
-  {
-    name:"🛁 BATH",
-    cls:"bath",
-    time:28,
-    target:28,
-    initial:18
-  },
-
-  {
-    name:"🪟 WINDOW",
-    cls:"window",
-    time:26,
-    target:32,
-    initial:20
-  },
-
-  {
-    name:"🛋️ ROOM",
-    cls:"room",
-    time:24,
-    target:36,
-    initial:22
-  },
-
-  {
-    name:"🧹 FLOOR",
-    cls:"floor",
-    time:22,
-    target:40,
-    initial:24
-  }
-
+const STAGES=[
+{
+name:"🍳 KITCHEN",
+cls:"kitchen",
+time:28,
+count:9,
+types:["dust","grease","hard"]
+},
+{
+name:"🛁 BATH",
+cls:"bath",
+time:27,
+count:10,
+types:["dust","water","scale","hard"]
+},
+{
+name:"❄️ AIR CONDITIONER",
+cls:"aircon",
+time:26,
+count:12,
+types:["dust","water","mold","hard"]
+},
+{
+name:"🛋️ ROOM",
+cls:"room",
+time:25,
+count:14,
+types:["dust","mold","hard"]
+},
+{
+name:"✨ PROFESSIONAL",
+cls:"pro",
+time:32,
+count:17,
+types:["dust","grease","mold","water","scale","hard"]
+}
 ];
 
+const POINTS={
+dust:120,
+grease:220,
+mold:260,
+water:180,
+scale:300,
+hard:500
+};
 
-/* =========================
-   DOM
-========================= */
+let stageIndex=0;
+let score=0;
+let combo=0;
+let timeLeft=0;
+let playing=false;
+let timerId=null;
+let spawnId=null;
+let dirtId=0;
+let transitionLock=false;
 
-const $ = id =>
-  document.getElementById(id);
+const $=id=>document.getElementById(id);
 
-const game =
-  $("game");
+const game=$("game");
+const stageEl=$("stage");
+const timeEl=$("time");
+const scoreEl=$("score");
+const comboEl=$("combo");
+const stageName=$("stageName");
+const result=$("result");
+const finalScore=$("finalScore");
+const ranking=$("ranking");
+const message=$("message");
+const startScreen=$("startScreen");
 
-const scene =
-  $("scene");
+function updateHUD(){
 
-const flash =
-  $("flash");
+stageEl.textContent=stageIndex+1;
 
-const stageEl =
-  $("stage");
+timeEl.textContent=timeLeft;
 
-const timeEl =
-  $("time");
+scoreEl.textContent=
+Math.max(0,score).toLocaleString();
 
-const scoreEl =
-  $("score");
-
-const comboEl =
-  $("combo");
-
-const messageEl =
-  $("message");
-
-const startOverlay =
-  $("startOverlay");
-
-const resultOverlay =
-  $("resultOverlay");
-
-const startBtn =
-  $("startBtn");
-
-const againBtn =
-  $("againBtn");
-
-const finalScore =
-  $("finalScore");
-
-const rankingEl =
-  $("ranking");
-
-const playerName =
-  $("playerName");
-
-
-/* =========================
-   状態
-========================= */
-
-let stage = 1;
-
-let time = 30;
-
-let score = 0;
-
-let combo = 0;
-
-let cleaned = 0;
-
-let playing = false;
-
-let timer = null;
-
-let spawnTimer = null;
-
-let player = "リュウタ";
-
-
-/* =========================
-   数字表示
-========================= */
-
-function fmt(n){
-
-  return Math.max(
-    0,
-    n
-  ).toLocaleString("ja-JP");
+comboEl.textContent=combo;
 
 }
-
-
-/* =========================
-   HUD
-========================= */
-
-function hud(){
-
-  stageEl.textContent =
-    stage;
-
-  timeEl.textContent =
-    time;
-
-  scoreEl.textContent =
-    fmt(score);
-
-  comboEl.textContent =
-    combo;
-
-}
-
-
-/* =========================
-   メッセージ
-========================= */
-
-function msg(
-  text,
-  type=""
-){
-
-  messageEl.textContent =
-    text;
-
-  messageEl.className =
-    "message " + type;
-
-  clearTimeout(msg.t);
-
-  msg.t =
-    setTimeout(
-      ()=>{
-        messageEl.textContent =
-          "";
-      },
-      700
-    );
-
-}
-
-
-/* =========================
-   汚れ全削除
-========================= */
 
 function clearDirt(){
 
-  game
-    .querySelectorAll(".dirt")
-    .forEach(
-      e => e.remove()
-    );
+game.querySelectorAll(".dirt")
+.forEach(d=>d.remove());
 
 }
 
+function clearTimers(){
 
-/* =========================
-   背景・部屋作成
-========================= */
+clearInterval(timerId);
+clearInterval(spawnId);
 
-function makeScene(){
-
-  const s =
-    STAGES[stage-1];
-
-  game.className =
-    "game " + s.cls;
-
-  scene.innerHTML =
-    "";
-
-
-  /* キッチン */
-
-  if(stage === 1){
-
-    scene.innerHTML = `
-
-      <div class="scene-title">
-        🍳 KITCHEN
-      </div>
-
-      <div class="object k-counter"></div>
-
-      <div class="object k-cab"></div>
-
-      <div class="object k-sink"></div>
-
-      <div class="object k-stove">
-
-        <span class="burn a"></span>
-
-        <span class="burn b"></span>
-
-      </div>
-
-      <div class="object k-fridge">
-
-        <span class="handle"></span>
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* お風呂 */
-
-  if(stage === 2){
-
-    scene.innerHTML = `
-
-      <div class="tile"></div>
-
-      <div class="scene-title">
-        🛁 BATH
-      </div>
-
-      <div class="object tub"></div>
-
-      <div class="object waterin"></div>
-
-      <div class="object mirror"></div>
-
-      <div class="object shower"></div>
-
-      <div class="object bottle"></div>
-
-      <div class="object mat"></div>
-
-    `;
-
-  }
-
-
-  /* 窓 */
-
-  if(stage === 3){
-
-    scene.innerHTML = `
-
-      <div class="sky"></div>
-
-      <div class="scene-title">
-        🪟 WINDOW
-      </div>
-
-      <div class="object windowframe">
-
-        <div class="pane"></div>
-
-        <span class="crossv"></span>
-
-        <span class="crossh"></span>
-
-      </div>
-
-      <div class="object plant">
-        🪴
-      </div>
-
-      <div class="object spray">
-        🧴
-      </div>
-
-    `;
-
-  }
-
-
-  /* 部屋 */
-
-  if(stage === 4){
-
-    scene.innerHTML = `
-
-      <div class="wall"></div>
-
-      <div class="floorwood"></div>
-
-      <div class="object rug"></div>
-
-      <div class="object sofa"></div>
-
-      <div class="object table"></div>
-
-      <div class="object tv"></div>
-
-      <div class="object shelf"></div>
-
-      <div class="scene-title">
-        🛋️ ROOM
-      </div>
-
-    `;
-
-  }
-
-
-  /* 床 */
-
-  if(stage === 5){
-
-    scene.innerHTML = `
-
-      <div class="floorbase"></div>
-
-      <div class="object doormat"></div>
-
-      <div class="object bucket">
-        🪣
-      </div>
-
-      <div class="object broom">
-        🧹
-      </div>
-
-      <div class="scene-title">
-        🧹 FLOOR
-      </div>
-
-    `;
-
-  }
+timerId=null;
+spawnId=null;
 
 }
 
+function rand(a,b){
 
-/* =========================
-   汚れ位置
-========================= */
-
-function randomPos(){
-
-  return {
-
-    x:
-      8 +
-      Math.random()*84,
-
-    y:
-      18 +
-      Math.random()*68
-
-  };
+return a+Math.random()*(b-a);
 
 }
 
+function pick(arr){
 
-/* =========================
-   汚れ種類
-========================= */
-
-function dirtType(){
-
-  const r =
-    Math.random();
-
-  if(r < .16){
-
-    return "gunk";
-
-  }
-
-  if(r < .31){
-
-    return "mold";
-
-  }
-
-  if(r < .42){
-
-    return "water";
-
-  }
-
-  return "";
+return arr[Math.floor(Math.random()*arr.length)];
 
 }
 
+function createDirt(){
 
-/* =========================
-   汚れ追加
-========================= */
+const s=STAGES[stageIndex];
 
-function addDirt(n){
+if(
+!playing ||
+game.querySelectorAll(".dirt").length>=s.count
+)return;
 
-  for(
-    let i=0;
-    i<n;
-    i++
-  ){
+const type=pick(s.types);
 
-    const d =
-      document.createElement(
-        "div"
-      );
+const d=document.createElement("button");
 
-    d.className =
-      "dirt " +
-      dirtType();
+d.className="dirt "+type;
 
+d.dataset.points=POINTS[type];
 
-    const p =
-      randomPos();
+d.dataset.id=++dirtId;
 
-
-    d.style.left =
-      p.x + "%";
-
-    d.style.top =
-      p.y + "%";
-
-
-    d.style.setProperty(
-      "--r",
-      (-24 +
-       Math.random()*48)
-      + "deg"
-    );
-
-
-    d.dataset.live =
-      "1";
-
-
-    d.addEventListener(
-      "pointerdown",
-      e => {
-
-        e.preventDefault();
-
-        e.stopPropagation();
-
-        if(!playing)
-          return;
-
-        clean(d);
-
-      }
-    );
-
-
-    game.appendChild(d);
-
-  }
-
-}
-
-
-/* =========================
-   現在の汚れ数
-========================= */
-
-function dirtNow(){
-
-  return game
-    .querySelectorAll(
-      ".dirt:not(.cleaning)"
-    )
-    .length;
-
-}
-
-
-/* =========================
-   掃除成功
-========================= */
-
-function clean(d){
-
-  if(
-    d.dataset.live !==
-    "1"
-  )
-    return;
-
-
-  d.dataset.live =
-    "0";
-
-
-  cleaned++;
-
-  combo++;
-
-
-  score +=
-    100 +
-    Math.min(
-      combo,
-      20
-    ) * 10;
-
-
-  d.classList.add(
-    "cleaning"
-  );
-
-
-  flash.className =
-    "flash good";
-
-
-  setTimeout(
-    ()=>{
-      flash.className =
-        "flash";
-    },
-    160
-  );
-
-
-  if(
-    combo % 5 === 0
-  ){
-
-    msg(
-      "🔥 " +
-      combo +
-      "コンボ！",
-      "good"
-    );
-
-  }else{
-
-    msg(
-      "✨ +" +
-      (
-        100 +
-        Math.min(
-          combo,
-          20
-        ) * 10
-      ),
-      "good"
-    );
-
-  }
-
-
-  setTimeout(
-    ()=>{
-      d.remove();
-    },
-    150
-  );
-
-
-  if(
-    cleaned >=
-    STAGES[stage-1].target
-  ){
-
-    setTimeout(
-      stageClear,
-      180
-    );
-
-  }else if(
-    dirtNow() < 6
-  ){
-
-    clearTimeout(
-      spawnTimer
-    );
-
-
-    spawnTimer =
-      setTimeout(
-        ()=>{
-          addDirt(
-            Math.min(
-              8,
-              STAGES[
-                stage-1
-              ].target -
-              cleaned
-            )
-          );
-        },
-        180
-      );
-
-  }
-
-
-  hud();
-
-}
-
-
-/* =========================
-   空振り
-========================= */
-
-function miss(){
-
-  if(!playing)
-    return;
-
-
-  score =
-    Math.max(
-      0,
-      score - 300
-    );
-
-
-  combo =
-    0;
-
-
-  flash.className =
-    "flash bad";
-
-
-  setTimeout(
-    ()=>{
-      flash.className =
-        "flash";
-    },
-    220
-  );
-
-
-  msg(
-    "空振り −300点",
-    "bad"
-  );
-
-
-  hud();
-
-}
-
-
-game.addEventListener(
-  "pointerdown",
-  e => {
-
-    if(
-      e.target === game ||
-      e.target === scene
-    ){
-
-      miss();
-
-    }
-
-  }
+d.setAttribute(
+"aria-label",
+"汚れを掃除"
 );
 
+let x=rand(5,86);
+let y=rand(9,86);
 
-/* =========================
-   ゲーム開始
-========================= */
+d.style.left=x+"%";
+d.style.top=y+"%";
 
-function startGame(){
+d.addEventListener(
+"pointerdown",
+e=>{
+e.preventDefault();
+e.stopPropagation();
+cleanDirt(d);
+},
+{passive:false}
+);
 
-  player =
-    (
-      playerName.value ||
-      "リュウタ"
-    )
-    .trim()
-    .slice(0,10)
-    ||
-    "リュウタ";
-
-
-  stage =
-    1;
-
-  score =
-    0;
-
-  combo =
-    0;
-
-  playing =
-    true;
-
-
-  startOverlay
-    .classList
-    .add("hidden");
-
-
-  resultOverlay
-    .classList
-    .add("hidden");
-
-
-  beginStage();
+game.appendChild(d);
 
 }
 
+function cleanDirt(d){
 
-/* =========================
-   ステージ開始
-========================= */
+if(!playing || !d.isConnected)
+return;
 
-function beginStage(){
+const pts=Number(d.dataset.points);
 
-  clearInterval(
-    timer
-  );
+const rect=d.getBoundingClientRect();
 
-  clearTimeout(
-    spawnTimer
-  );
+const gRect=game.getBoundingClientRect();
 
+d.remove();
 
-  clearDirt();
+combo++;
 
+const bonus=
+1+
+Math.min(combo-1,15)*0.08;
 
-  const s =
-    STAGES[
-      stage-1
-    ];
+const gained=
+Math.round(pts*bonus);
 
+score+=gained;
 
-  time =
-    s.time;
+showFloat(
+"+"+gained,
+rect.left-gRect.left,
+rect.top-gRect.top
+);
 
+updateHUD();
 
-  cleaned =
-    0;
-
-
-  makeScene();
-
-
-  addDirt(
-    s.initial
-  );
-
-
-  hud();
-
-
-  timer =
-    setInterval(
-      ()=>{
-
-        if(!playing)
-          return;
-
-
-        time--;
-
-
-        hud();
-
-
-        if(
-          time <= 0
-        ){
-
-          stageClear(
-            true
-          );
-
-        }
-
-      },
-      1000
-    );
-
-}
-
-
-/* =========================
-   ステージクリア
-========================= */
-
-function stageClear(
-  timeup=false
+if(
+game.querySelectorAll(".dirt").length===0
 ){
 
-  if(!playing)
-    return;
-
-
-  clearInterval(
-    timer
-  );
-
-  clearTimeout(
-    spawnTimer
-  );
-
-
-  clearDirt();
-
-
-  if(timeup){
-
-    msg(
-      "時間切れ！",
-      "bad"
-    );
-
-  }else{
-
-    score +=
-      time * 150;
-
-
-    msg(
-      "ステージクリア！",
-      "good"
-    );
-
-  }
-
-
-  hud();
-
-
-  setTimeout(
-    ()=>{
-
-      if(
-        stage <
-        STAGES.length
-      ){
-
-        stage++;
-
-        beginStage();
-
-      }else{
-
-        finishGame();
-
-      }
-
-    },
-    700
-  );
-
-}
-
-
-/* =========================
-   ゲーム終了
-========================= */
-
-function finishGame(){
-
-  playing =
-    false;
-
-
-  clearInterval(
-    timer
-  );
-
-  clearTimeout(
-    spawnTimer
-  );
-
-
-  clearDirt();
-
-
-  finalScore.textContent =
-    fmt(score) +
-    "点";
-
-
-  saveRanking();
-
-
-  renderRanking();
-
-
-  resultOverlay
-    .classList
-    .remove("hidden");
-
-}
-
-
-/* =========================
-   ランキング取得
-========================= */
-
-function getRanks(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(
-        "bisoMasterRanking"
-      ) || "[]"
-    );
-
-  }catch{
-
-    return [];
-
-  }
-
-}
-
-
-/* =========================
-   ランキング保存
-========================= */
-
-function saveRanking(){
-
-  const ranks =
-    getRanks();
-
-
-  ranks.push({
-
-    name:
-      player,
-
-    score:
-      score,
-
-    date:
-      new Date()
-        .toLocaleDateString(
-          "ja-JP"
-        )
-
-  });
-
-
-  ranks.sort(
-    (a,b)=>
-      b.score -
-      a.score
-  );
-
-
-  localStorage.setItem(
-    "bisoMasterRanking",
-    JSON.stringify(
-      ranks.slice(
-        0,
-        10
-      )
-    )
-  );
-
-}
-
-
-/* =========================
-   ランキング表示
-========================= */
-
-function renderRanking(){
-
-  const ranks =
-    getRanks();
-
-
-  rankingEl.innerHTML =
-
-    '<div class="rankTitle">' +
-    '🏆 あなたのランキング' +
-    '</div>' +
-
-    (
-
-      ranks.length
-
-      ?
-
-      ranks.map(
-        (r,i)=>`
-
-          <div
-            class="rankRow ${
-              r.name === player &&
-              r.score === score
-                ? "rankMe"
-                : ""
-            }"
-          >
-
-            <span>
-              ${
-                [
-                  "🥇",
-                  "🥈",
-                  "🥉"
-                ][i]
-                ||
-                (
-                  i+1
-                )+"位"
-              }
-            </span>
-
-            <span>
-              ${escapeHtml(
-                r.name
-              )}
-            </span>
-
-            <span>
-              ${fmt(
-                r.score
-              )}点
-            </span>
-
-          </div>
-
-        `
-      ).join("")
-
-      :
-
-      '<div style="text-align:center;padding:10px">' +
-      'まだ記録がありません' +
-      '</div>'
-
-    );
-
-}
-
-
-/* =========================
-   HTML安全処理
-========================= */
-
-function escapeHtml(s){
-
-  return s.replace(
-    /[&<>'"]/g,
-    c =>
-      ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        "'":"&#39;",
-        '"':"&quot;"
-      })[c]
-  );
-
-}
-
-
-/* =========================
-   ボタン
-========================= */
-
-startBtn.addEventListener(
-  "click",
-  startGame
+setTimeout(
+nextStage,
+280
 );
 
+}
 
-againBtn.addEventListener(
-  "click",
-  ()=>{
+}
 
-    startOverlay
-      .classList
-      .remove("hidden");
+function wrongTap(){
 
-    resultOverlay
-      .classList
-      .add("hidden");
+if(!playing)
+return;
 
-    hud();
+combo=0;
 
-  }
+score=
+Math.max(0,score-80);
+
+updateHUD();
+
+showFloat(
+"−80",
+game.clientWidth/2-25,
+game.clientHeight/2
 );
 
+const f=
+document.createElement("div");
 
-/* =========================
-   Enterでも開始
-========================= */
+f.className="flash";
 
-playerName.addEventListener(
-  "keydown",
-  e => {
+game.appendChild(f);
 
-    if(
-      e.key === "Enter"
-    ){
-
-      startGame();
-
-    }
-
-  }
+setTimeout(
+()=>f.remove(),
+260
 );
 
+}
 
-/* =========================
-   初期状態
-   ※絶対に自動スタートしない
-========================= */
+game.addEventListener(
+"pointerdown",
+e=>{
 
-stage =
-  1;
+if(
+e.target===game ||
+e.target===stageName ||
+e.target===game.querySelector(".decor")
+){
 
-time =
-  STAGES[0].time;
+wrongTap();
 
-score =
-  0;
+}
 
-combo =
-  0;
+}
+);
 
-makeScene();
+function showFloat(text,x,y){
+
+const f=
+document.createElement("div");
+
+f.className="float";
+
+f.textContent=text;
+
+f.style.left=x+"px";
+f.style.top=y+"px";
+
+game.appendChild(f);
+
+setTimeout(
+()=>f.remove(),
+700
+);
+
+}
+
+function startStage(){
+
+transitionLock=false;
+
+clearTimers();
 
 clearDirt();
 
-hud();
+const s=STAGES[stageIndex];
+
+game.className=
+"game "+s.cls;
+
+stageName.textContent=
+s.name;
+
+timeLeft=s.time;
+
+combo=0;
+
+updateHUD();
+
+const initial=
+Math.min(
+Math.max(5,Math.floor(s.count*.55)),
+s.count
+);
+
+for(
+let i=0;
+i<initial;
+i++
+){
+
+createDirt();
+
+}
+
+game.dataset.stage=
+stageIndex;
+
+timerId=
+setInterval(
+()=>{
+
+if(!playing)
+return;
+
+timeLeft--;
+
+updateHUD();
+
+if(timeLeft<=0){
+
+if(
+stageIndex<
+STAGES.length-1
+){
+
+nextStage();
+
+}else{
+
+endGame();
+
+}
+
+}
+
+},
+1000
+);
+
+spawnId=
+setInterval(
+()=>{
+
+if(!playing)
+return;
+
+if(
+game.querySelectorAll(".dirt").length<
+s.count
+){
+
+createDirt();
+
+}
+
+},
+700
+);
+
+}
+
+function nextStage(){
+
+if(
+!playing ||
+transitionLock
+)
+return;
+
+transitionLock=true;
+
+if(
+stageIndex>=
+STAGES.length-1
+){
+
+endGame();
+
+return;
+
+}
+
+message.textContent=
+"✨ STAGE CLEAR!";
+
+message.style.display=
+"block";
+
+setTimeout(
+()=>{
+
+message.style.display=
+"none";
+
+stageIndex++;
+
+startStage();
+
+},
+500
+);
+
+}
+
+function saveRank(){
+
+const key=
+"cleanMasterRanking";
+
+let list=[];
+
+try{
+
+list=
+JSON.parse(
+localStorage.getItem(key)||"[]"
+);
+
+}catch(e){
+
+list=[];
+
+}
+
+list.push({
+
+name:"リュウタ",
+
+score:score,
+
+date:
+new Date()
+.toLocaleDateString("ja-JP")
+
+});
+
+list.sort(
+(a,b)=>b.score-a.score
+);
+
+list=
+list.slice(0,5);
+
+try{
+
+localStorage.setItem(
+key,
+JSON.stringify(list)
+);
+
+}catch(e){}
+
+return list;
+
+}
+
+function renderRank(list){
+
+ranking.innerHTML=
+list.map(
+(r,i)=>`
+
+<div class="rankRow ${
+r.name==="リュウタ" &&
+r.score===score
+?"rankMe":""
+}">
+
+<span>
+${["🥇","🥈","🥉","4️⃣","5️⃣"][i]}
+${r.name}
+</span>
+
+<span>
+${Number(r.score).toLocaleString()}点
+</span>
+
+</div>
+
+`
+).join("");
+
+}
+
+function endGame(){
+
+if(!playing)
+return;
+
+playing=false;
+
+clearTimers();
+
+clearDirt();
+
+finalScore.textContent=
+score.toLocaleString()+"点";
+
+renderRank(
+saveRank()
+);
+
+result.style.display=
+"block";
+
+setTimeout(
+()=>result.scrollIntoView({
+behavior:"smooth",
+block:"center"
+}),
+80
+);
+
+}
+
+function resetGame(){
+
+clearTimers();
+
+stageIndex=0;
+
+score=0;
+
+combo=0;
+
+playing=true;
+
+result.style.display=
+"none";
+
+startScreen.style.display=
+"none";
+
+updateHUD();
+
+startStage();
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+$("startBtn")
+.addEventListener(
+"click",
+resetGame
+);
+
+$("again")
+.addEventListener(
+"click",
+resetGame
+);
+
+updateHUD();
 
 </script>
 
