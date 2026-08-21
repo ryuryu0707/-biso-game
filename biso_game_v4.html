@@ -6,7 +6,10 @@
 <title>美装職人！クリーンマスター</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
 
 html,body{
 margin:0;
@@ -18,7 +21,9 @@ color:white;
 overflow-x:hidden;
 }
 
-body{padding:15px 12px 30px}
+body{
+padding:15px 12px 30px;
+}
 
 h1{
 text-align:center;
@@ -61,6 +66,8 @@ font-size:13px;
 margin-top:6px;
 color:#dbe5f5;
 }
+
+/* ゲーム画面 */
 
 .game{
 position:relative;
@@ -111,6 +118,8 @@ opacity:.3;
 pointer-events:none;
 }
 
+/* 汚れ */
+
 .dirt{
 position:absolute;
 border:0;
@@ -120,30 +129,30 @@ filter:drop-shadow(0 6px 6px #0005);
 }
 
 .small{
-width:55px;
-height:38px;
+width:52px;
+height:36px;
 border-radius:50%;
 background:#684020;
 }
 
 .medium{
-width:75px;
-height:50px;
+width:70px;
+height:47px;
 border-radius:50%;
 background:#70421f;
 }
 
 .hard{
-width:82px;
-height:55px;
+width:78px;
+height:53px;
 border-radius:50%;
 background:#55291d;
 outline:5px solid #ff7045;
 }
 
 .gold{
-width:75px;
-height:52px;
+width:72px;
+height:50px;
 border-radius:50%;
 background:#ffd34e;
 outline:4px solid #fff1a0;
@@ -161,8 +170,15 @@ background:#98704f;
 opacity:.7;
 }
 
-.hard:after{background:#80382b}
-.gold:after{background:#fff19b}
+.hard:after{
+background:#80382b;
+}
+
+.gold:after{
+background:#fff19b;
+}
+
+/* +100 / -100 */
 
 .float{
 position:absolute;
@@ -174,9 +190,34 @@ animation:up .7s forwards;
 }
 
 @keyframes up{
-0%{opacity:1;transform:translateY(0)}
-100%{opacity:0;transform:translateY(-60px)}
+0%{
+opacity:1;
+transform:translateY(0);
 }
+100%{
+opacity:0;
+transform:translateY(-60px);
+}
+}
+
+/* 間違いタップ */
+
+.flash{
+position:absolute;
+inset:0;
+z-index:30;
+background:#ff333355;
+animation:flash .25s forwards;
+pointer-events:none;
+}
+
+@keyframes flash{
+to{
+background:transparent;
+}
+}
+
+/* 結果 */
 
 #result{
 display:none;
@@ -209,19 +250,6 @@ font-weight:900;
 background:#4fe09d;
 color:#062318;
 margin-top:20px;
-}
-
-.flash{
-position:absolute;
-inset:0;
-z-index:30;
-background:#ff333355;
-animation:flash .25s forwards;
-pointer-events:none;
-}
-
-@keyframes flash{
-to{background:transparent}
 }
 </style>
 </head>
@@ -286,38 +314,53 @@ to{background:transparent}
 
 <script>
 
+/* =========================
+   ステージ設定
+========================= */
+
 const stages=[
+
 {
 name:"🔍 KITCHEN",
 className:"kitchen",
 time:30,
-dirt:7
+maxDirt:8
 },
+
 {
 name:"🛁 BATH",
 className:"bath",
 time:30,
-dirt:9
+maxDirt:11
 },
+
 {
 name:"❄️ AIR CONDITIONER",
 className:"aircon",
 time:30,
-dirt:11
+maxDirt:14
 },
+
 {
 name:"🛋️ ROOM",
 className:"room",
 time:30,
-dirt:13
+maxDirt:17
 },
+
 {
 name:"✨ PROFESSIONAL",
 className:"pro",
 time:35,
-dirt:16
+maxDirt:20
 }
+
 ];
+
+
+/* =========================
+   ゲーム変数
+========================= */
 
 let stage=0;
 let score=0;
@@ -326,63 +369,141 @@ let time=30;
 let playing=true;
 let timer;
 
+
+/* =========================
+   HTML取得
+========================= */
+
 const game=document.getElementById("game");
+
 const stageEl=document.getElementById("stage");
+
 const timeEl=document.getElementById("time");
+
 const scoreEl=document.getElementById("score");
+
 const comboEl=document.getElementById("combo");
+
 const stageName=document.getElementById("stageName");
+
+
+/* =========================
+   HUD更新
+========================= */
 
 function hud(){
 
 stageEl.textContent=stage+1;
+
 timeEl.textContent=time;
+
 scoreEl.textContent=Math.max(0,score).toLocaleString();
+
 comboEl.textContent=combo;
 
 }
 
+
+/* =========================
+   汚れを全部消す
+========================= */
+
 function clearDirt(){
 
-document.querySelectorAll(".dirt").forEach(d=>d.remove());
+document.querySelectorAll(".dirt").forEach(d=>{
+d.remove();
+});
 
 }
+
+
+/* =========================
+   汚れタイプ
+========================= */
 
 function makeDirt(){
 
 if(!playing)return;
 
-const s=stages[stage];
 
-if(document.querySelectorAll(".dirt").length>=s.dirt)return;
+/*
+ステージが進むほど
+硬い汚れが増える
+*/
 
-const d=document.createElement("button");
+const difficulty=stage;
 
 const r=Math.random();
 
+let type;
+
 let points;
 
-if(r<0.1){
-d.className="dirt gold";
+
+/* 金色レア */
+
+if(r<0.08){
+
+type="gold";
+
 points=1500;
+
 }
-else if(r<0.3){
-d.className="dirt hard";
+
+
+/* HARD */
+
+else if(r<0.25 + difficulty*0.03){
+
+type="hard";
+
 points=350;
+
 }
-else if(r<0.65){
-d.className="dirt medium";
+
+
+/* MEDIUM */
+
+else if(r<0.60){
+
+type="medium";
+
 points=200;
+
 }
+
+
+/* SMALL */
+
 else{
-d.className="dirt small";
+
+type="small";
+
 points=100;
+
 }
+
+
+/* 汚れ作成 */
+
+const d=document.createElement("button");
+
+d.className="dirt "+type;
 
 d.dataset.points=points;
 
+
+/*
+ゲーム画面の中に
+ランダム配置
+*/
+
 d.style.left=(5+Math.random()*85)+"%";
+
 d.style.top=(8+Math.random()*84)+"%";
+
+
+/* タップ */
 
 d.onclick=function(e){
 
@@ -390,33 +511,68 @@ e.stopPropagation();
 
 if(!playing)return;
 
+
+/* 得点 */
+
 const p=Number(d.dataset.points);
+
+
+/* 消す */
 
 d.remove();
 
+
+/* コンボ */
+
 combo++;
 
-const bonus=1+Math.min(combo-1,20)*0.05;
+
+/* コンボボーナス */
+
+const bonus=
+1+Math.min(combo-1,20)*0.05;
+
+
+/* 加点 */
 
 const add=Math.round(p*bonus);
 
 score+=add;
 
+
+/* 表示 */
+
 floatText("+"+add);
+
+
+/* HUD */
 
 hud();
 
-if(document.querySelectorAll(".dirt").length===0){
 
-setTimeout(nextStage,300);
+/*
+ここ重要！
 
-}
+全部消しても
+ステージは変わらない。
+
+時間が0になるまで
+同じステージ。
+*/
 
 };
+
+
+/* ゲーム画面へ追加 */
 
 game.appendChild(d);
 
 }
+
+
+/* =========================
+   +点 / -点表示
+========================= */
 
 function floatText(text){
 
@@ -427,70 +583,152 @@ f.className="float";
 f.textContent=text;
 
 f.style.left="45%";
+
 f.style.top="45%";
 
 game.appendChild(f);
 
-setTimeout(()=>f.remove(),700);
+setTimeout(()=>{
+f.remove();
+},700);
 
 }
 
-function wrong(){
+
+/* =========================
+   間違いタップ
+========================= */
+
+function wrongTap(){
 
 if(!playing)return;
 
+
+/*
+スコアは0にならない。
+100点だけ減る。
+*/
+
 score-=100;
 
-if(score<0)score=0;
+if(score<0){
+score=0;
+}
+
+
+/*
+コンボリセット
+*/
 
 combo=0;
 
+
+/* 表示 */
+
 floatText("−100");
 
-const f=document.createElement("div");
 
-f.className="flash";
+/* 赤フラッシュ */
 
-game.appendChild(f);
+const flash=document.createElement("div");
 
-setTimeout(()=>f.remove(),250);
+flash.className="flash";
+
+game.appendChild(flash);
+
+setTimeout(()=>{
+flash.remove();
+},250);
+
+
+/* HUD */
 
 hud();
 
 }
 
+
+/* =========================
+   ゲーム画面タップ
+========================= */
+
 game.onclick=function(e){
 
-if(e.target===game ||
-e.target===stageName){
+/*
+汚れ以外を押したら
+−100点
+*/
 
-wrong();
+if(
+e.target===game ||
+e.target===stageName
+){
+
+wrongTap();
 
 }
 
 };
 
+
+/* =========================
+   ステージ開始
+========================= */
+
 function startStage(){
 
 const s=stages[stage];
 
+
+/* 画面クリア */
+
 clearDirt();
+
+
+/* 背景変更 */
 
 game.className="game "+s.className;
 
+
+/* ステージ名 */
+
 stageName.textContent=s.name;
+
+
+/* 時間 */
 
 time=s.time;
 
+
+/* コンボ */
+
 combo=0;
+
+
+/* HUD */
 
 hud();
 
-for(let i=0;i<Math.min(6,s.dirt);i++){
+
+/*
+最初の汚れ
+
+ステージが進むほど
+最初から多くする
+*/
+
+for(
+let i=0;
+i<s.maxDirt;
+i++
+){
 
 makeDirt();
 
 }
+
+
+/* タイマー */
 
 clearInterval(timer);
 
@@ -498,9 +736,20 @@ timer=setInterval(function(){
 
 if(!playing)return;
 
+
+/* 1秒減る */
+
 time--;
 
+
+/* HUD */
+
 hud();
+
+
+/*
+時間切れ
+*/
 
 if(time<=0){
 
@@ -512,23 +761,43 @@ nextStage();
 
 }
 
+
+/* =========================
+   次ステージ
+========================= */
+
 function nextStage(){
 
 if(!playing)return;
 
-if(stage>=stages.length-1){
 
-endGame();
+/*
+まだステージがある
+*/
 
-return;
-
-}
+if(stage<stages.length-1){
 
 stage++;
 
 startStage();
 
+return;
+
 }
+
+
+/*
+5ステージ終了
+*/
+
+endGame();
+
+}
+
+
+/* =========================
+   ゲーム終了
+========================= */
 
 function endGame(){
 
@@ -545,19 +814,47 @@ document.getElementById("result").style.display="block";
 
 }
 
+
+/* =========================
+   汚れ補充
+========================= */
+
+
+/*
+ここも重要。
+
+汚れを消しても
+すぐ新しい汚れが出る。
+
+ただし最大数以上にはならない。
+*/
+
 setInterval(function(){
 
 if(!playing)return;
 
-if(document.querySelectorAll(".dirt").length<stages[stage].dirt){
+const max=stages[stage].maxDirt;
+
+const current=
+document.querySelectorAll(".dirt").length;
+
+
+/*
+減った分だけ補充
+*/
+
+if(current<max){
 
 makeDirt();
 
 }
 
-},700);
+},500);
 
-/* 開いた瞬間にゲーム開始 */
+
+/* =========================
+   開いた瞬間にスタート
+========================= */
 
 startStage();
 
