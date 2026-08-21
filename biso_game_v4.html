@@ -20,6 +20,15 @@ h1{text-align:center;font-size:25px;margin:5px 0 3px;font-weight:900}
 .scene.window{background:linear-gradient(#bfe5ff 0 62%,#8aa6b5 62% 100%)}
 .scene.room{background:linear-gradient(#f4ead7 0 57%,#9a704d 57% 100%)}
 .scene.floor{background:linear-gradient(#d9e0e4 0 20%,#b5a28d 20% 100%)}
+/* ステージごとに一目で違いが分かる背景 */
+.scene:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.9}
+.scene.kitchen:before{background:radial-gradient(circle at 78% 18%,rgba(255,255,255,.9) 0 7%,transparent 7.5%),linear-gradient(90deg,transparent 0 72%,rgba(255,255,255,.18) 72% 74%,transparent 74%)}
+.scene.bath:before{background:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 2px,transparent 2px 54px),repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 2px,transparent 2px 54px)}
+.scene.window:before{background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 38%),radial-gradient(circle at 18% 25%,#fff7 0 8%,transparent 9%),linear-gradient(#9ad4ff66,#5d8fb466)}
+.scene.room:before{background:radial-gradient(ellipse at 18% 18%,rgba(255,255,255,.35),transparent 18%),linear-gradient(90deg,transparent 0 14%,rgba(255,255,255,.12) 14% 15%,transparent 15% 85%,rgba(255,255,255,.12) 85% 86%,transparent 86%)}
+.scene.floor:before{background:repeating-linear-gradient(0deg,transparent 0 52px,rgba(255,255,255,.12) 53px 55px),repeating-linear-gradient(90deg,transparent 0 88px,rgba(255,255,255,.09) 89px 91px)}
+.stageBadge{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:20;background:rgba(8,17,31,.72);padding:7px 14px;border-radius:999px;font-size:13px;font-weight:900;letter-spacing:.04em;pointer-events:none}
+
 .furniture{position:absolute;pointer-events:none}
 .cab{left:7%;bottom:15%;width:86%;height:27%;background:#b87b45;border:6px solid #80522f;border-radius:10px}
 .sink{left:32%;bottom:35%;width:36%;height:13%;background:#e7eef1;border:5px solid #87979f;border-radius:45%}
@@ -78,7 +87,7 @@ h1{text-align:center;font-size:25px;margin:5px 0 3px;font-weight:900}
 <div id="scene" class="scene kitchen active"><div class="furniture cab"></div><div class="furniture sink"></div></div>
 <div id="startCard" class="startCard">
 <div class="characters">🐉 🧹 🐶</div><h2>クリーンマスター</h2>
-<p>汚れをタップして消そう！<br>間違えて汚れじゃない場所を押すと<br><b>スコアが0点に戻る</b>で🔥</p>
+<p>汚れをタップして消そう！<br>間違えて汚れじゃない場所を押すと<br><b>スコアが減点＆コンボリセット</b>で🔥</p>
 <button id="startBtn" class="mainBtn">ゲームスタート！</button>
 </div>
 <div id="stageMessage" class="stageMessage"><div class="stageBox"><h2 id="stageTitle">STAGE 1</h2><p id="stageText">準備OK？</p></div></div>
@@ -136,7 +145,7 @@ function clearDirts(){
   document.querySelectorAll(".dirt,.floatScore").forEach(el=>el.remove()); remaining=0;
 }
 function setScene(){
-  scene.className="scene "+STAGE_TYPES[stage-1]; scene.innerHTML="";
+  scene.className="scene "+STAGE_TYPES[stage-1]; scene.innerHTML="<div class=\"stageBadge\">STAGE "+stage+"・"+STAGE_NAMES[stage-1]+"</div>";
   if(stage===1)scene.innerHTML='<div class="furniture cab"></div><div class="furniture sink"></div>';
   if(stage===2)scene.innerHTML='<div class="furniture tub"></div><div class="furniture mirror"></div>';
   if(stage===3)scene.innerHTML='<div class="furniture windowFrame"></div>';
@@ -163,6 +172,11 @@ function showFloat(dirt,points){
   f.style.left=(r.left-g.left)+"px"; f.style.top=(r.top-g.top-4)+"px";
   game.appendChild(f); setTimeout(()=>f.remove(),700);
 }
+function showFloatAt(clientX,clientY,text){
+  const g=game.getBoundingClientRect(),f=document.createElement("div");
+  f.className="floatScore"; f.textContent=text; f.style.left=(clientX-g.left-10)+"px"; f.style.top=(clientY-g.top-12)+"px";
+  f.style.color="#ff6b6b"; game.appendChild(f); setTimeout(()=>f.remove(),700);
+}
 function cleanDirt(e){
   e.preventDefault(); e.stopPropagation();
   if(!playing)return;
@@ -173,9 +187,12 @@ function cleanDirt(e){
   score+=bonus;showFloat(dirt,bonus);updateHUD();setTimeout(()=>dirt.remove(),130);
 }
 function wrongClick(e){
-  if(!playing||e.target!==game)return;
-  score=0;combo=0;updateHUD();
-  showMessage("💥 ミス！","汚れじゃない場所を押したで！スコアは0点に戻る！",900);
+  if(!playing||e.target!==scene)return;
+  const penalty=100;
+  score=Math.max(0,score-penalty);
+  combo=0;
+  updateHUD();
+  showFloatAt(e.clientX,e.clientY,"-"+penalty);
 }
 function showMessage(title,text,duration=1000){
   stageTitle.textContent=title;stageText.textContent=text;stageMessage.classList.add("show");
@@ -267,7 +284,7 @@ function escapeHtml(s){
   return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 }
 
-game.addEventListener("pointerdown",wrongClick);
+scene.addEventListener("pointerdown",wrongClick);
 document.getElementById("startBtn").addEventListener("click",startGame);
 document.getElementById("restartBtn").addEventListener("click",startGame);
 document.getElementById("judgeBtn").addEventListener("click",judgeFriend);
