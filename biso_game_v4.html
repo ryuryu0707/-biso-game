@@ -2037,10 +2037,10 @@ showRanking = async function(){
   "4️⃣",
   "5️⃣"
 ];
-const bestRanking = ranking
-  .sort((a, b) => Number(b.score) - Number(a.score))
-  .slice(0, 5);
-
+const bestRanking = Object.values(ranking.reduce((acc, item) => {
+  if (!acc[item.player_name] || Number(item.score) > Number(acc[item.player_name].score)) acc[item.player_name] = item;
+  return acc;
+}, {})).sort((a, b) => Number(b.score) - Number(a.score)).slice(0, 5);
 rankingList.innerHTML =
   bestRanking.map((item, index) => `
     <div class="rankRow">
