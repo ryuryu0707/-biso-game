@@ -2,10 +2,13 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
 <title>美装職人！クリーンマスター</title>
 
 <style>
+
 *{
 box-sizing:border-box;
 -webkit-tap-highlight-color:transparent;
@@ -22,13 +25,13 @@ overflow-x:hidden;
 }
 
 body{
-padding:15px 12px 30px;
+padding:12px 10px 30px;
 }
 
 h1{
 text-align:center;
-font-size:clamp(24px,7vw,40px);
-margin:5px 0;
+font-size:clamp(25px,7vw,42px);
+margin:5px 0 2px;
 font-weight:900;
 }
 
@@ -37,13 +40,13 @@ text-align:center;
 font-size:clamp(14px,4vw,21px);
 font-weight:800;
 color:#dbe5f5;
-margin-bottom:15px;
+margin-bottom:14px;
 }
 
 .hud{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:9px;
+gap:8px;
 max-width:900px;
 margin:auto;
 }
@@ -51,139 +54,224 @@ margin:auto;
 .box{
 background:#162d4e;
 border-radius:18px;
-padding:12px 4px;
+padding:11px 3px;
 text-align:center;
 }
 
 .num{
-font-size:clamp(23px,7vw,38px);
+font-size:clamp(22px,7vw,38px);
 font-weight:900;
 line-height:1;
 }
 
 .label{
-font-size:13px;
+font-size:12px;
 margin-top:6px;
 color:#dbe5f5;
 }
 
-/* ゲーム画面 */
+/* =========================
+ゲームエリア
+========================= */
 
 .game{
 position:relative;
 height:min(720px,68vh);
 min-height:500px;
 max-width:900px;
-margin:16px auto;
+margin:15px auto;
 border:6px solid #3e6085;
-border-radius:40px;
+border-radius:35px;
 overflow:hidden;
 touch-action:manipulation;
 }
 
-/* ステージ背景 */
+/* =========================
+ステージ背景
+========================= */
 
 .kitchen{
 background:
-linear-gradient(135deg,#fff1c8 0 48%,#d8b27a 48%);
+linear-gradient(135deg,#fff0c7 0 45%,#d6ae76 45% 100%);
 }
 
 .bath{
 background:
-linear-gradient(135deg,#e7faff,#83c7db);
+linear-gradient(135deg,#dff8ff 0 45%,#79bfd4 45% 100%);
 }
 
 .aircon{
 background:
-linear-gradient(180deg,#dff4ff 0 55%,#b4cfe2 55%);
+linear-gradient(180deg,#eaf8ff 0 50%,#b9cfdf 50%);
 }
 
 .room{
 background:
-linear-gradient(135deg,#d9cbbb 0 50%,#8d7660 50%);
+linear-gradient(135deg,#eee1d2 0 48%,#a7896f 48%);
 }
 
 .pro{
 background:
-linear-gradient(135deg,#eef3f8 0 50%,#aebdce 50%);
+linear-gradient(135deg,#f5f7fa 0 42%,#9aaabc 42%);
 }
 
 .stageName{
 position:absolute;
-top:18px;
-left:22px;
+top:15px;
+left:20px;
 font-size:clamp(20px,5vw,34px);
 font-weight:900;
-opacity:.3;
+opacity:.35;
 pointer-events:none;
+z-index:2;
 }
 
-/* 汚れ */
+/* =========================
+汚れ共通
+========================= */
 
 .dirt{
 position:absolute;
+z-index:10;
 border:0;
-z-index:5;
 cursor:pointer;
-filter:drop-shadow(0 6px 6px #0005);
+filter:drop-shadow(0 5px 5px #0005);
+padding:0;
 }
 
-.small{
-width:52px;
-height:36px;
+/* ホコリ */
+
+.dust{
+width:45px;
+height:30px;
 border-radius:50%;
-background:#684020;
+background:#6b6258;
 }
 
-.medium{
-width:70px;
-height:47px;
+.dust:after{
+content:"";
+position:absolute;
+width:55%;
+height:40%;
+left:22%;
+top:20%;
 border-radius:50%;
-background:#70421f;
+background:#9c9185;
 }
 
-.hard{
+/* 油汚れ */
+
+.oil{
+width:72px;
+height:45px;
+border-radius:50%;
+background:#594225;
+outline:4px solid #8b6b35;
+}
+
+.oil:after{
+content:"";
+position:absolute;
+width:50%;
+height:35%;
+left:25%;
+top:25%;
+border-radius:50%;
+background:#b39452;
+}
+
+/* カビ */
+
+.mold{
+width:55px;
+height:55px;
+border-radius:50%;
+background:#285d38;
+outline:4px solid #6da84d;
+}
+
+.mold:after{
+content:"";
+position:absolute;
+width:35%;
+height:35%;
+left:32%;
+top:30%;
+border-radius:50%;
+background:#173b28;
+}
+
+/* 水アカ */
+
+.water{
+width:62px;
+height:42px;
+border-radius:50%;
+background:#52798b;
+outline:4px solid #9bdcf5;
+}
+
+.water:after{
+content:"";
+position:absolute;
+width:50%;
+height:40%;
+left:25%;
+top:25%;
+border-radius:50%;
+background:#7695a3;
+}
+
+/* 焦げ */
+
+.burn{
 width:78px;
-height:53px;
+height:52px;
 border-radius:50%;
-background:#55291d;
+background:#4c2118;
 outline:5px solid #ff7045;
 }
 
-.gold{
-width:72px;
-height:50px;
-border-radius:50%;
-background:#ffd34e;
-outline:4px solid #fff1a0;
-}
-
-.dirt:after{
+.burn:after{
 content:"";
 position:absolute;
-left:20%;
-top:20%;
-width:55%;
+width:50%;
 height:40%;
+left:25%;
+top:25%;
 border-radius:50%;
-background:#98704f;
-opacity:.7;
+background:#7e3327;
 }
 
-.hard:after{
-background:#80382b;
+/* 金色レア */
+
+.gold{
+width:75px;
+height:52px;
+border-radius:50%;
+background:#ffd34e;
+outline:5px solid #fff0a0;
 }
 
 .gold:after{
-background:#fff19b;
+content:"";
+position:absolute;
+width:50%;
+height:40%;
+left:25%;
+top:25%;
+border-radius:50%;
+background:#fff3a8;
 }
 
-/* +100 / -100 */
+/* =========================
+得点表示
+========================= */
 
 .float{
 position:absolute;
-z-index:20;
-font-size:28px;
+z-index:30;
+font-size:30px;
 font-weight:900;
 pointer-events:none;
 animation:up .7s forwards;
@@ -192,22 +280,32 @@ animation:up .7s forwards;
 @keyframes up{
 0%{
 opacity:1;
-transform:translateY(0);
+transform:translateY(0) scale(1);
 }
 100%{
 opacity:0;
-transform:translateY(-60px);
+transform:translateY(-65px) scale(1.2);
 }
 }
 
-/* 間違いタップ */
+.good{
+color:#42f59b;
+}
+
+.bad{
+color:#ff6464;
+}
+
+/* =========================
+ミス演出
+========================= */
 
 .flash{
 position:absolute;
 inset:0;
-z-index:30;
-background:#ff333355;
-animation:flash .25s forwards;
+z-index:25;
+background:#ff222244;
+animation:flash .3s forwards;
 pointer-events:none;
 }
 
@@ -217,12 +315,14 @@ background:transparent;
 }
 }
 
-/* 結果 */
+/* =========================
+結果画面
+========================= */
 
 #result{
 display:none;
 max-width:750px;
-margin:30px auto;
+margin:25px auto;
 padding:30px 20px;
 background:#19345a;
 border:5px solid #3e6085;
@@ -236,9 +336,10 @@ margin:10px 0;
 }
 
 .final{
-font-size:60px;
+font-size:58px;
 font-weight:900;
 color:#ffc247;
+margin:15px 0 25px;
 }
 
 button{
@@ -249,8 +350,9 @@ font-size:20px;
 font-weight:900;
 background:#4fe09d;
 color:#062318;
-margin-top:20px;
+margin-top:10px;
 }
+
 </style>
 </head>
 
@@ -286,17 +388,19 @@ margin-top:20px;
 
 </div>
 
+
 <div id="game" class="game kitchen">
 
 <div id="stageName" class="stageName">
-🔍 KITCHEN
+🍳 KITCHEN
 </div>
 
 </div>
+
 
 <div id="result">
 
-<div style="font-size:60px">🏆</div>
+<div style="font-size:65px">🏆</div>
 
 <h2>ゲーム終了！</h2>
 
@@ -312,279 +416,306 @@ margin-top:20px;
 
 </div>
 
+
 <script>
 
-/* =========================
-   ステージ設定
-========================= */
+/* ==================================================
+ステージ設定
+================================================== */
 
-const stages=[
+const stages = [
+
+/* ステージ1 */
 
 {
-name:"🔍 KITCHEN",
+name:"🍳 KITCHEN",
 className:"kitchen",
 time:30,
-maxDirt:8
+maxDirt:7,
+types:["oil","burn","dust"]
 },
+
+/* ステージ2 */
 
 {
 name:"🛁 BATH",
 className:"bath",
 time:30,
-maxDirt:11
+maxDirt:9,
+types:["mold","water","dust"]
 },
+
+/* ステージ3 */
 
 {
 name:"❄️ AIR CONDITIONER",
 className:"aircon",
 time:30,
-maxDirt:14
+maxDirt:11,
+types:["dust","dust","water","gold"]
 },
+
+/* ステージ4 */
 
 {
 name:"🛋️ ROOM",
 className:"room",
 time:30,
-maxDirt:17
+maxDirt:13,
+types:["dust","dust","oil","burn"]
 },
+
+/* ステージ5 */
 
 {
 name:"✨ PROFESSIONAL",
 className:"pro",
 time:35,
-maxDirt:20
+maxDirt:16,
+types:["burn","mold","oil","gold"]
 }
 
 ];
 
 
-/* =========================
-   ゲーム変数
-========================= */
+/* ==================================================
+ゲーム変数
+================================================== */
 
-let stage=0;
-let score=0;
-let combo=0;
-let time=30;
-let playing=true;
-let timer;
+let stage = 0;
 
+let score = 0;
 
-/* =========================
-   HTML取得
-========================= */
+let combo = 0;
 
-const game=document.getElementById("game");
+let time = 30;
 
-const stageEl=document.getElementById("stage");
+let playing = true;
 
-const timeEl=document.getElementById("time");
+let timer = null;
 
-const scoreEl=document.getElementById("score");
-
-const comboEl=document.getElementById("combo");
-
-const stageName=document.getElementById("stageName");
+let refillTimer = null;
 
 
-/* =========================
-   HUD更新
-========================= */
+/* ==================================================
+HTML
+================================================== */
 
-function hud(){
+const game =
+document.getElementById("game");
 
-stageEl.textContent=stage+1;
+const stageEl =
+document.getElementById("stage");
 
-timeEl.textContent=time;
+const timeEl =
+document.getElementById("time");
 
-scoreEl.textContent=Math.max(0,score).toLocaleString();
+const scoreEl =
+document.getElementById("score");
 
-comboEl.textContent=combo;
+const comboEl =
+document.getElementById("combo");
+
+const stageName =
+document.getElementById("stageName");
+
+
+/* ==================================================
+HUD
+================================================== */
+
+function updateHUD(){
+
+stageEl.textContent = stage + 1;
+
+timeEl.textContent = time;
+
+scoreEl.textContent =
+Math.max(0,score).toLocaleString();
+
+comboEl.textContent = combo;
 
 }
 
 
-/* =========================
-   汚れを全部消す
-========================= */
+/* ==================================================
+汚れを全部削除
+================================================== */
 
 function clearDirt(){
 
-document.querySelectorAll(".dirt").forEach(d=>{
-d.remove();
-});
+game.querySelectorAll(".dirt")
+.forEach(d => d.remove());
 
+}
+
+
+/* ==================================================
+ステージ別の汚れ
+================================================== */
+
+function randomType(){
+
+const list =
+stages[stage].types;
+
+return list[
+Math.floor(Math.random()*list.length)
+];
+
+}
+
+
+/* ==================================================
+汚れ作成
+================================================== */
+
+function createDirt(){
+
+if(!playing)return;
+
+const d =
+document.createElement("div");
+
+const type =
+randomType();
+
+d.className =
+"dirt " + type;
+
+
+/* =========================
+ステージが進むほど
+少しずつ小さくして難しくする
+========================= */
+
+const sizeBonus =
+Math.max(0,stage*2);
+
+d.style.transform =
+"scale("+(1-sizeBonus/100)+")";
+
+
+/* =========================
+ランダム配置
+========================= */
+
+const left =
+5 + Math.random()*82;
+
+const top =
+8 + Math.random()*82;
+
+d.style.left = left+"%";
+
+d.style.top = top+"%";
+
+
+/* =========================
+得点
+========================= */
+
+let basePoint = 100;
+
+if(type==="dust"){
+basePoint=100;
+}
+
+if(type==="oil"){
+basePoint=180;
+}
+
+if(type==="water"){
+basePoint=220;
+}
+
+if(type==="mold"){
+basePoint=250;
+}
+
+if(type==="burn"){
+basePoint=350;
+}
+
+if(type==="gold"){
+basePoint=1000;
 }
 
 
 /* =========================
-   汚れタイプ
+タップ
 ========================= */
 
-function makeDirt(){
-
-if(!playing)return;
-
-
-/*
-ステージが進むほど
-硬い汚れが増える
-*/
-
-const difficulty=stage;
-
-const r=Math.random();
-
-let type;
-
-let points;
-
-
-/* 金色レア */
-
-if(r<0.08){
-
-type="gold";
-
-points=1500;
-
-}
-
-
-/* HARD */
-
-else if(r<0.25 + difficulty*0.03){
-
-type="hard";
-
-points=350;
-
-}
-
-
-/* MEDIUM */
-
-else if(r<0.60){
-
-type="medium";
-
-points=200;
-
-}
-
-
-/* SMALL */
-
-else{
-
-type="small";
-
-points=100;
-
-}
-
-
-/* 汚れ作成 */
-
-const d=document.createElement("button");
-
-d.className="dirt "+type;
-
-d.dataset.points=points;
-
-
-/*
-ゲーム画面の中に
-ランダム配置
-*/
-
-d.style.left=(5+Math.random()*85)+"%";
-
-d.style.top=(8+Math.random()*84)+"%";
-
-
-/* タップ */
-
-d.onclick=function(e){
+d.addEventListener("pointerdown",function(e){
 
 e.stopPropagation();
 
 if(!playing)return;
 
 
-/* 得点 */
-
-const p=Number(d.dataset.points);
-
-
-/* 消す */
-
-d.remove();
-
-
-/* コンボ */
+/* 連続コンボ */
 
 combo++;
 
 
-/* コンボボーナス */
+/* コンボ倍率 */
 
-const bonus=
-1+Math.min(combo-1,20)*0.05;
+const multiplier =
+1 + Math.min(combo-1,20)*0.05;
 
 
 /* 加点 */
 
-const add=Math.round(p*bonus);
+const add =
+Math.round(basePoint*multiplier);
 
-score+=add;
+score += add;
+
+
+/* 汚れを消す */
+
+d.remove();
 
 
 /* 表示 */
 
-floatText("+"+add);
+showFloat(
+"+"+add,
+true
+);
 
 
 /* HUD */
 
-hud();
+updateHUD();
 
+});
 
-/*
-ここ重要！
-
-全部消しても
-ステージは変わらない。
-
-時間が0になるまで
-同じステージ。
-*/
-
-};
-
-
-/* ゲーム画面へ追加 */
 
 game.appendChild(d);
 
 }
 
 
-/* =========================
-   +点 / -点表示
-========================= */
+/* ==================================================
+得点表示
+================================================== */
 
-function floatText(text){
+function showFloat(text,good){
 
-const f=document.createElement("div");
+const f =
+document.createElement("div");
 
-f.className="float";
+f.className =
+"float "+(good ? "good":"bad");
 
-f.textContent=text;
+f.textContent = text;
 
-f.style.left="45%";
+f.style.left =
+(30+Math.random()*35)+"%";
 
-f.style.top="45%";
+f.style.top =
+(35+Math.random()*30)+"%";
 
 game.appendChild(f);
 
@@ -595,42 +726,42 @@ f.remove();
 }
 
 
-/* =========================
-   間違いタップ
-========================= */
+/* ==================================================
+間違いタップ
+================================================== */
 
 function wrongTap(){
 
 if(!playing)return;
 
 
-/*
-スコアは0にならない。
-100点だけ減る。
-*/
+/* =========================
+−100点
+========================= */
 
-score-=100;
+score -= 100;
 
-if(score<0){
-score=0;
+if(score < 0){
+score = 0;
 }
 
 
-/*
+/* =========================
 コンボリセット
-*/
+========================= */
 
-combo=0;
+combo = 0;
 
 
 /* 表示 */
 
-floatText("−100");
+showFloat("−100",false);
 
 
 /* 赤フラッシュ */
 
-const flash=document.createElement("div");
+const flash =
+document.createElement("div");
 
 flash.className="flash";
 
@@ -638,84 +769,90 @@ game.appendChild(flash);
 
 setTimeout(()=>{
 flash.remove();
-},250);
+},300);
 
 
 /* HUD */
 
-hud();
+updateHUD();
 
 }
 
 
-/* =========================
-   ゲーム画面タップ
-========================= */
+/* ==================================================
+ゲームエリアの空振り
+================================================== */
 
-game.onclick=function(e){
+game.addEventListener("pointerdown",function(e){
 
 /*
-汚れ以外を押したら
-−100点
+汚れ以外をタップした場合だけ
+ミス扱い
 */
 
 if(
-e.target===game ||
-e.target===stageName
+e.target === game ||
+e.target === stageName
 ){
 
 wrongTap();
 
 }
 
-};
+});
 
 
-/* =========================
-   ステージ開始
-========================= */
+/* ==================================================
+ステージ開始
+================================================== */
 
 function startStage(){
 
-const s=stages[stage];
+const s =
+stages[stage];
 
 
-/* 画面クリア */
+/* 古いタイマー停止 */
+
+clearInterval(timer);
+
+
+/* 汚れ削除 */
 
 clearDirt();
 
 
 /* 背景変更 */
 
-game.className="game "+s.className;
+game.className =
+"game "+s.className;
 
 
 /* ステージ名 */
 
-stageName.textContent=s.name;
+stageName.textContent =
+s.name;
 
 
 /* 時間 */
 
-time=s.time;
+time = s.time;
 
 
-/* コンボ */
+/* ステージ開始時に
+コンボだけリセット */
 
-combo=0;
+combo = 0;
 
 
 /* HUD */
 
-hud();
+updateHUD();
 
 
-/*
+/* =========================
 最初の汚れ
-
-ステージが進むほど
-最初から多くする
-*/
+========================= */
 
 for(
 let i=0;
@@ -723,35 +860,34 @@ i<s.maxDirt;
 i++
 ){
 
-makeDirt();
+createDirt();
 
 }
 
 
-/* タイマー */
+/* ==================================================
+タイマー
 
-clearInterval(timer);
+ここでは絶対に
+「汚れを全部消した」
+ことではステージ変更しない。
 
-timer=setInterval(function(){
+時間が0になった時だけ。
+================================================== */
+
+timer =
+setInterval(function(){
 
 if(!playing)return;
 
-
-/* 1秒減る */
-
 time--;
 
-
-/* HUD */
-
-hud();
+updateHUD();
 
 
-/*
-時間切れ
-*/
+if(time <= 0){
 
-if(time<=0){
+clearInterval(timer);
 
 nextStage();
 
@@ -762,9 +898,40 @@ nextStage();
 }
 
 
-/* =========================
-   次ステージ
-========================= */
+/* ==================================================
+汚れ補充
+================================================== */
+
+function refillDirt(){
+
+if(!playing)return;
+
+const max =
+stages[stage].maxDirt;
+
+const current =
+game.querySelectorAll(".dirt").length;
+
+
+/*
+減った分だけ補充。
+
+ただし、
+補充してもステージは変わらない。
+*/
+
+if(current < max){
+
+createDirt();
+
+}
+
+}
+
+
+/* ==================================================
+次ステージ
+================================================== */
 
 function nextStage(){
 
@@ -775,7 +942,7 @@ if(!playing)return;
 まだステージがある
 */
 
-if(stage<stages.length-1){
+if(stage < stages.length-1){
 
 stage++;
 
@@ -787,7 +954,7 @@ return;
 
 
 /*
-5ステージ終了
+全ステージ終了
 */
 
 endGame();
@@ -795,9 +962,9 @@ endGame();
 }
 
 
-/* =========================
-   ゲーム終了
-========================= */
+/* ==================================================
+ゲーム終了
+================================================== */
 
 function endGame(){
 
@@ -805,56 +972,40 @@ playing=false;
 
 clearInterval(timer);
 
+clearInterval(refillTimer);
+
 clearDirt();
 
-document.getElementById("finalScore").textContent=
+document.getElementById("finalScore")
+.textContent =
 score.toLocaleString()+"点";
 
-document.getElementById("result").style.display="block";
+document.getElementById("result")
+.style.display="block";
 
 }
 
 
-/* =========================
-   汚れ補充
-========================= */
+/* ==================================================
+自動補充タイマー
 
+約0.8秒ごと。
 
-/*
-ここも重要。
+全部消しても
+即ステージ変更は絶対しない。
+================================================== */
 
-汚れを消しても
-すぐ新しい汚れが出る。
-
-ただし最大数以上にはならない。
-*/
-
+refillTimer =
 setInterval(function(){
 
-if(!playing)return;
+refillDirt();
 
-const max=stages[stage].maxDirt;
-
-const current=
-document.querySelectorAll(".dirt").length;
+},800);
 
 
-/*
-減った分だけ補充
-*/
-
-if(current<max){
-
-makeDirt();
-
-}
-
-},500);
-
-
-/* =========================
-   開いた瞬間にスタート
-========================= */
+/* ==================================================
+ゲーム開始
+================================================== */
 
 startStage();
 
