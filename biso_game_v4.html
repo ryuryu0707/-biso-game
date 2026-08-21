@@ -4,292 +4,562 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>美装職人！クリーンマスター</title>
-<style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;min-height:100%;background:#08111f;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
-body{overflow-x:hidden}button,input{font:inherit}.wrap{width:100%;max-width:720px;margin:auto;padding:12px}
-h1{text-align:center;font-size:25px;margin:5px 0 3px;font-weight:900}
-.sub{text-align:center;color:#dbe5f5;font-weight:800;font-size:14px;margin-bottom:12px}
-.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
-.hudBox{background:#162a46;border-radius:16px;padding:8px 2px;text-align:center}
-.hudNum{font-size:22px;font-weight:900}.hudLabel{font-size:10px;color:#b9c7da;margin-top:2px}
-.game{position:relative;width:100%;height:65vh;min-height:470px;max-height:720px;overflow:hidden;border:2px solid #385270;border-radius:26px;background:#14243b;touch-action:none}
-.scene{position:absolute;inset:0;display:none}.scene.active{display:block}
-.scene.kitchen{background:linear-gradient(#e9f5ff 0 46%,#d3dce4 46% 50%,#9b7a5c 50% 100%)}
-.scene.bath{background:linear-gradient(#dff4ff 0 52%,#c2d0d8 52% 57%,#8798a3 57% 100%)}
-.scene.window{background:linear-gradient(#bfe5ff 0 62%,#8aa6b5 62% 100%)}
-.scene.room{background:linear-gradient(#f4ead7 0 57%,#9a704d 57% 100%)}
-.scene.floor{background:linear-gradient(#d9e0e4 0 20%,#b5a28d 20% 100%)}
-/* ステージごとに一目で違いが分かる背景 */
-.scene:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.9}
-.scene.kitchen:before{background:radial-gradient(circle at 78% 18%,rgba(255,255,255,.9) 0 7%,transparent 7.5%),linear-gradient(90deg,transparent 0 72%,rgba(255,255,255,.18) 72% 74%,transparent 74%)}
-.scene.bath:before{background:repeating-linear-gradient(90deg,rgba(255,255,255,.22) 0 2px,transparent 2px 54px),repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 2px,transparent 2px 54px)}
-.scene.window:before{background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 38%),radial-gradient(circle at 18% 25%,#fff7 0 8%,transparent 9%),linear-gradient(#9ad4ff66,#5d8fb466)}
-.scene.room:before{background:radial-gradient(ellipse at 18% 18%,rgba(255,255,255,.35),transparent 18%),linear-gradient(90deg,transparent 0 14%,rgba(255,255,255,.12) 14% 15%,transparent 15% 85%,rgba(255,255,255,.12) 85% 86%,transparent 86%)}
-.scene.floor:before{background:repeating-linear-gradient(0deg,transparent 0 52px,rgba(255,255,255,.12) 53px 55px),repeating-linear-gradient(90deg,transparent 0 88px,rgba(255,255,255,.09) 89px 91px)}
-.stageBadge{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:20;background:rgba(8,17,31,.72);padding:7px 14px;border-radius:999px;font-size:13px;font-weight:900;letter-spacing:.04em;pointer-events:none}
 
-.furniture{position:absolute;pointer-events:none}
-.cab{left:7%;bottom:15%;width:86%;height:27%;background:#b87b45;border:6px solid #80522f;border-radius:10px}
-.sink{left:32%;bottom:35%;width:36%;height:13%;background:#e7eef1;border:5px solid #87979f;border-radius:45%}
-.tub{left:9%;bottom:18%;width:82%;height:26%;background:#f6f8f9;border:6px solid #9aaab3;border-radius:28px}
-.mirror{left:16%;top:13%;width:68%;height:35%;background:linear-gradient(135deg,#dff7ff,#8ec6dc);border:7px solid #8b969c;border-radius:12px}
-.windowFrame{left:12%;top:12%;width:76%;height:48%;background:linear-gradient(90deg,transparent 48%,#fff 48% 52%,transparent 52%),linear-gradient(0deg,transparent 48%,#fff 48% 52%,transparent 52%),#a9dfff;border:8px solid #fff;border-radius:8px}
-.sofa{left:9%;bottom:14%;width:82%;height:28%;background:#76645a;border-radius:28px 28px 10px 10px}
-.table{left:18%;bottom:22%;width:64%;height:8%;background:#805b3e;border-radius:8px}
-.floorLines{position:absolute;inset:20% 0 0;background:repeating-linear-gradient(0deg,transparent 0 54px,rgba(80,60,40,.18) 55px 57px),repeating-linear-gradient(90deg,transparent 0 90px,rgba(80,60,40,.12) 91px 93px)}
-/* 丸ではない汚れ */
-.dirt{position:absolute;z-index:30;touch-action:manipulation;user-select:none;cursor:pointer;transition:transform .12s,opacity .12s;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))}
-.dirt:active{transform:scale(.84)}
-.dirt.stain{width:58px;height:38px;background:#3b2c25;border-radius:46% 28% 57% 34%;transform:rotate(-13deg)}
-.dirt.stain:after{content:"";position:absolute;left:12px;top:7px;width:27px;height:16px;background:#5a4334;border-radius:62% 31% 45% 28%;transform:rotate(17deg)}
-.dirt.streak{width:64px;height:18px;background:#49382d;border-radius:8px 55% 10px 30%;transform:rotate(11deg)}
-.dirt.streak:before{content:"";position:absolute;left:10px;top:5px;width:38px;height:5px;background:#735540;border-radius:50%}
-.dirt.water{width:34px;height:54px;background:linear-gradient(135deg,#4c6678,#243b4b);border-radius:70% 28% 64% 30%;transform:rotate(22deg);box-shadow:inset 5px 4px 0 rgba(190,235,255,.3),0 0 7px rgba(120,210,255,.35)}
-.dirt.mold{width:53px;height:47px;background:#243c28;border-radius:28% 62% 37% 55%;transform:rotate(-8deg);box-shadow:inset 10px 5px 0 #416a36,inset 25px 22px 0 #18321f}
-.dirt.hard{width:60px;height:46px;background:#541b16;border:3px solid #ff7043;border-radius:28% 55% 34% 61%;transform:rotate(-6deg);box-shadow:0 0 13px rgba(255,80,40,.45)}
-.dirt.rare{width:47px;height:47px;background:linear-gradient(135deg,#7df9ff,#3e8fff 55%,#172b67);border:3px solid #9eeaff;border-radius:26% 58% 41% 52%;transform:rotate(19deg);box-shadow:0 0 17px rgba(80,210,255,.85)}
-.dirt.gold{width:58px;height:45px;background:linear-gradient(135deg,#fff4a3,#ffc857 55%,#bd7100);border:3px solid #ffe27a;border-radius:55% 28% 62% 34%;transform:rotate(-17deg);box-shadow:0 0 20px rgba(255,200,50,.9)}
-.dirt.gone{opacity:0;transform:scale(1.7) rotate(20deg);pointer-events:none}
-.startCard{position:absolute;inset:8%;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#162a46;border:2px solid #405d80;border-radius:26px;padding:22px}
-.characters{font-size:58px}.startCard h2{font-size:29px;margin:8px 0}.startCard p{color:#dbe5f5;font-weight:800;line-height:1.7;margin:5px 0}
-.mainBtn,.resultButtons button,.challenge button{border:0;border-radius:17px;font-weight:900}
-.mainBtn{background:#50d99a;color:#062316;font-size:20px;padding:16px 34px;margin-top:12px}
-.stageMessage{position:absolute;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(8,17,31,.78)}
-.stageMessage.show{display:flex}.stageBox{width:86%;background:#162a46;border:2px solid #4d6b91;border-radius:24px;padding:28px;text-align:center}
-.stageBox h2{font-size:29px;margin:0 0 10px}.stageBox p{font-size:18px;font-weight:800;line-height:1.6}
-.floatScore{position:absolute;z-index:300;font-size:21px;font-weight:900;pointer-events:none;animation:floatUp .65s ease forwards}
-@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-58px) scale(1.25)}}
-.result{position:fixed;inset:0;z-index:9999;display:none;background:#08111f;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.result.show{display:block}.resultInner{width:100%;max-width:720px;min-height:100vh;margin:auto;padding:24px 14px 65px}
-.resultTitle{text-align:center;font-size:30px;font-weight:900;margin-bottom:18px}.resultPanel{background:#162a46;border:2px solid #405d80;border-radius:25px;padding:25px 16px;text-align:center}
-.finalScore{color:#ffc857;font-size:58px;font-weight:900;line-height:1.1;margin:10px 0}.bestText{color:#dbe5f5;font-size:17px;font-weight:900;line-height:1.7}
-.challenge,.ranking{margin-top:22px;background:#0d1b30;border-radius:21px;padding:19px 14px}.challenge h3,.ranking h3{font-size:19px;margin:0 0 13px}
-.challenge input{width:100%;border:0;outline:0;border-radius:16px;padding:16px;font-size:19px;text-align:center;margin-bottom:10px}
-.challenge button{background:#50d99a;color:#062316;padding:14px 28px;font-size:17px}.judge{min-height:35px;margin-top:14px;font-size:22px;font-weight:900}
-.rankRow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:11px 4px;border-bottom:1px solid #263b58;font-weight:800}.rankRow:last-child{border-bottom:0}
-.resultButtons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.resultButtons button{padding:16px 7px;font-size:16px}
-.restart{background:#50d99a;color:#062316}.share{background:#344b6b;color:#fff}.footer{text-align:center;color:#65738a;margin-top:25px;font-size:12px;font-weight:800}
-@media(max-width:480px){h1{font-size:22px}.sub{font-size:12px}.hudNum{font-size:20px}.hudLabel{font-size:9px}.game{height:64vh;min-height:465px}.finalScore{font-size:51px}}
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
+  background:#071222;
+  color:white;
+  overflow-x:hidden;
+}
+
+button,input{
+  font:inherit;
+}
+
+#app{
+  min-height:100vh;
+  padding:12px;
+}
+
+h1{
+  text-align:center;
+  margin:8px 0 2px;
+  font-size:25px;
+}
+
+.sub{
+  text-align:center;
+  color:#c9d7e9;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.hud{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+
+.box{
+  background:#162b49;
+  border-radius:16px;
+  padding:10px 4px;
+  text-align:center;
+}
+
+.num{
+  font-size:23px;
+  font-weight:900;
+}
+
+.label{
+  font-size:12px;
+  color:#c9d7e9;
+}
+
+#game{
+  position:relative;
+  width:100%;
+  height:65vh;
+  min-height:430px;
+  border:4px solid #42658b;
+  border-radius:24px;
+  overflow:hidden;
+  transition:background .5s;
+}
+
+/* ステージ背景 */
+.stage1{
+  background:
+    linear-gradient(135deg,#f3e2c5,#c9a97b);
+}
+
+.stage2{
+  background:
+    linear-gradient(135deg,#dff4ff,#8bb8d4);
+}
+
+.stage3{
+  background:
+    linear-gradient(135deg,#e8f2f8,#9db7c8);
+}
+
+.stage4{
+  background:
+    linear-gradient(135deg,#eee8dc,#b99e7b);
+}
+
+.stage5{
+  background:
+    linear-gradient(135deg,#d8d8d8,#777);
+}
+
+/* 開始画面 */
+#startScreen,
+#resultScreen{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  background:#071222;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
+}
+
+.panel{
+  width:100%;
+  max-width:500px;
+  background:#162b49;
+  border-radius:24px;
+  padding:28px 20px;
+  text-align:center;
+  border:3px solid #42658b;
+}
+
+.panel h2{
+  font-size:30px;
+  margin:5px 0 10px;
+}
+
+.panel p{
+  color:#d4e0ee;
+  line-height:1.7;
+}
+
+.mainBtn{
+  border:0;
+  background:#4fda9c;
+  color:#052017;
+  font-weight:900;
+  font-size:20px;
+  padding:16px 35px;
+  border-radius:18px;
+  margin-top:15px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* 汚れ */
+.dirt{
+  position:absolute;
+  width:58px;
+  height:42px;
+  border-radius:50%;
+  cursor:pointer;
+  touch-action:manipulation;
+  z-index:5;
+  box-shadow:0 5px 12px #0005;
+}
+
+.dirt::after{
+  content:"";
+  position:absolute;
+  inset:8px 15px;
+  border-radius:50%;
+  background:#ffffff22;
+}
+
+.dirt.gold{
+  background:#6b4228;
+}
+
+.dirt.rare{
+  background:#68451e;
+  border:3px solid #ff7043;
+}
+
+.dirt.hard{
+  background:#466577;
+  border:3px solid #9bdfff;
+  box-shadow:0 0 18px #66ccff88;
+}
+
+.float{
+  position:absolute;
+  z-index:20;
+  font-size:25px;
+  font-weight:900;
+  animation:float .7s forwards;
+  pointer-events:none;
+}
+
+@keyframes float{
+  0%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-55px)}
+}
+
+#stageMessage{
+  position:absolute;
+  inset:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  font-size:40px;
+  font-weight:900;
+  text-shadow:0 4px 10px #000;
+  opacity:0;
+}
+
+#stageMessage.show{
+  animation:stage .9s;
+}
+
+@keyframes stage{
+  0%{opacity:0;transform:scale(.7)}
+  30%{opacity:1;transform:scale(1)}
+  80%{opacity:1}
+  100%{opacity:0}
+}
+
+.resultScore{
+  font-size:64px;
+  font-weight:900;
+  color:#ffc34d;
+}
+
+.rank{
+  margin-top:18px;
+  background:#0b1c33;
+  border-radius:18px;
+  padding:15px;
+}
+
+.rankRow{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 4px;
+  border-bottom:1px solid #29425f;
+}
+
+.rankRow:last-child{
+  border-bottom:0;
+}
 </style>
 </head>
+
 <body>
-<div class="wrap">
-<h1>🧹 美装職人！クリーンマスター</h1>
-<div class="sub">🐉 龍＆🐶わんこと競争！誰でも遊べる掃除ゲーム🔥</div>
-<div class="hud">
-<div class="hudBox"><div id="stageHUD" class="hudNum">1</div><div class="hudLabel">ステージ</div></div>
-<div class="hudBox"><div id="timeHUD" class="hudNum">30</div><div class="hudLabel">残り時間</div></div>
-<div class="hudBox"><div id="scoreHUD" class="hudNum">0</div><div class="hudLabel">スコア</div></div>
-<div class="hudBox"><div id="comboHUD" class="hudNum">0</div><div class="hudLabel">コンボ</div></div>
-</div>
-<div id="game" class="game">
-<div id="scene" class="scene kitchen active"><div class="furniture cab"></div><div class="furniture sink"></div></div>
-<div id="startCard" class="startCard">
-<div class="characters">🐉 🧹 🐶</div><h2>クリーンマスター</h2>
-<p>汚れをタップして消そう！<br>間違えて汚れじゃない場所を押すと<br><b>スコアが減点＆コンボリセット</b>で🔥</p>
-<button id="startBtn" class="mainBtn">ゲームスタート！</button>
-</div>
-<div id="stageMessage" class="stageMessage"><div class="stageBox"><h2 id="stageTitle">STAGE 1</h2><p id="stageText">準備OK？</p></div></div>
-</div>
+
+<div id="startScreen">
+  <div class="panel">
+    <div style="font-size:55px">🧹</div>
+    <h2>美装職人！<br>クリーンマスター</h2>
+    <p>
+      🐉 龍＆🐶わんこと競争！<br>
+      誰でも遊べる掃除ゲーム🔥
+    </p>
+    <p>
+      汚れを見つけてタップ！<br>
+      間違えると<strong>−100点</strong>！
+    </p>
+    <button class="mainBtn" onclick="startGame()">ゲーム開始！</button>
+  </div>
 </div>
 
-<div id="result" class="result">
-<div class="resultInner">
-<div class="resultTitle">🏆 クリーン完了！</div>
-<div class="resultPanel">
-<div>あなたのスコア</div>
-<div id="finalScore" class="finalScore">0点</div>
-<div id="bestText" class="bestText">🔥 もっと上を狙おう！</div>
-<div class="challenge">
-<h3>⚔️ 友達のスコアに挑戦</h3>
-<input id="friendScore" type="number" inputmode="numeric" placeholder="友達のスコアを入力">
-<button id="judgeBtn">勝負判定！</button>
-<div id="judge" class="judge"></div>
+<div id="resultScreen" class="hidden">
+  <div class="panel">
+    <div style="font-size:45px">🏆</div>
+    <h2>ゲーム終了！</h2>
+    <div>あなたのスコア</div>
+    <div id="finalScore" class="resultScore">0点</div>
+
+    <div class="rank">
+      <h3>🏆 あなたのランキング</h3>
+      <div class="rankRow">
+        <span>🥇 リュウタ</span>
+        <strong id="rankScore">0点</strong>
+      </div>
+      <div class="rankRow">
+        <span>🥈 テスト</span>
+        <strong>100点</strong>
+      </div>
+    </div>
+
+    <button class="mainBtn" onclick="startGame()">もう一度！</button>
+  </div>
 </div>
-<div class="ranking">
-<h3>🏆 あなたのランキング</h3>
-<div id="rankingList"><div class="rankRow">読み込み中…</div></div>
+
+<div id="app">
+
+<h1>🧹 美装職人！クリーンマスター</h1>
+
+<div class="sub">
+🐉 龍＆🐶わんこと競争！誰でも遊べる掃除ゲーム🔥
 </div>
-<div class="resultButtons">
-<button id="restartBtn" class="restart">もう一度！</button>
-<button id="shareBtn" class="share">𝕏 挑戦状をシェア</button>
+
+<div class="hud">
+  <div class="box">
+    <div class="num" id="stage">1</div>
+    <div class="label">ステージ</div>
+  </div>
+
+  <div class="box">
+    <div class="num" id="time">30</div>
+    <div class="label">残り時間</div>
+  </div>
+
+  <div class="box">
+    <div class="num" id="score">0</div>
+    <div class="label">スコア</div>
+  </div>
+
+  <div class="box">
+    <div class="num" id="combo">0</div>
+    <div class="label">コンボ</div>
+  </div>
 </div>
+
+<div id="game" class="stage1" onclick="wrongTap(event)">
+  <div id="stageMessage"></div>
 </div>
-<div class="footer">美装職人！クリーンマスター</div>
-</div>
+
 </div>
 
 <script>
-const TOTAL_STAGES=5, STAGE_TIME=30;
-const STAGE_NAMES=["キッチン","お風呂","窓・ガラス","お部屋","床・仕上げ"];
-const STAGE_TYPES=["kitchen","bath","window","room","floor"];
-const DIRT_POINTS={stain:150,streak:150,water:180,mold:250,hard:350,rare:700,gold:1500};
 
-const scene=document.getElementById("scene"),game=document.getElementById("game");
-const startCard=document.getElementById("startCard"),stageMessage=document.getElementById("stageMessage");
-const stageTitle=document.getElementById("stageTitle"),stageText=document.getElementById("stageText");
-const result=document.getElementById("result"),stageHUD=document.getElementById("stageHUD");
-const timeHUD=document.getElementById("timeHUD"),scoreHUD=document.getElementById("scoreHUD");
-const comboHUD=document.getElementById("comboHUD"),finalScore=document.getElementById("finalScore");
-const rankingList=document.getElementById("rankingList"),judge=document.getElementById("judge");
+let stage=1;
+let score=0;
+let combo=0;
+let time=30;
+let timer=null;
+let playing=false;
 
-let stage=1,time=STAGE_TIME,score=0,combo=0,remaining=0,playing=false,timer=null,dirtTimer=null;
-let best=Number(localStorage.getItem("bisoBestScore")||0);
+const STAGE_TIME=30;
+const MAX_STAGE=5;
 
-function updateHUD(){
-  stageHUD.textContent=stage; timeHUD.textContent=time;
-  scoreHUD.textContent=score.toLocaleString(); comboHUD.textContent=combo;
-}
-function clearDirts(){
-  document.querySelectorAll(".dirt,.floatScore").forEach(el=>el.remove()); remaining=0;
-}
-function setScene(){
-  scene.className="scene "+STAGE_TYPES[stage-1]; scene.innerHTML="<div class=\"stageBadge\">STAGE "+stage+"・"+STAGE_NAMES[stage-1]+"</div>";
-  if(stage===1)scene.innerHTML='<div class="furniture cab"></div><div class="furniture sink"></div>';
-  if(stage===2)scene.innerHTML='<div class="furniture tub"></div><div class="furniture mirror"></div>';
-  if(stage===3)scene.innerHTML='<div class="furniture windowFrame"></div>';
-  if(stage===4)scene.innerHTML='<div class="furniture sofa"></div><div class="furniture table"></div>';
-  if(stage===5)scene.innerHTML='<div class="floorLines"></div>';
-}
-function randomType(){
-  const r=Math.random();
-  if(r<.035)return"gold"; if(r<.11)return"rare"; if(r<.23)return"hard";
-  return["stain","streak","water","mold"][Math.floor(Math.random()*4)];
-}
-function createDirt(){
-  if(!playing||remaining>=16)return;
-  const type=randomType(),dirt=document.createElement("div");
-  dirt.className="dirt "+type; dirt.dataset.type=type;
-  dirt.style.left=(6+Math.random()*84)+"%"; dirt.style.top=(12+Math.random()*70)+"%";
-  dirt.addEventListener("pointerdown",cleanDirt,{passive:false});
-  game.appendChild(dirt); remaining++;
-  setTimeout(()=>{if(dirt.parentNode&&!dirt.classList.contains("gone")){dirt.remove();remaining=Math.max(0,remaining-1)}},6500);
-}
-function showFloat(dirt,points){
-  const r=dirt.getBoundingClientRect(),g=game.getBoundingClientRect(),f=document.createElement("div");
-  f.className="floatScore"; f.textContent="+"+points;
-  f.style.left=(r.left-g.left)+"px"; f.style.top=(r.top-g.top-4)+"px";
-  game.appendChild(f); setTimeout(()=>f.remove(),700);
-}
-function showFloatAt(clientX,clientY,text){
-  const g=game.getBoundingClientRect(),f=document.createElement("div");
-  f.className="floatScore"; f.textContent=text; f.style.left=(clientX-g.left-10)+"px"; f.style.top=(clientY-g.top-12)+"px";
-  f.style.color="#ff6b6b"; game.appendChild(f); setTimeout(()=>f.remove(),700);
-}
-function cleanDirt(e){
-  e.preventDefault(); e.stopPropagation();
-  if(!playing)return;
-  const dirt=e.currentTarget;if(dirt.classList.contains("gone"))return;
-  const type=dirt.dataset.type,points=DIRT_POINTS[type]||150;
-  dirt.classList.add("gone"); remaining=Math.max(0,remaining-1); combo++;
-  let bonus=points;if(combo>=5)bonus+=combo*25;if(combo>=10)bonus+=combo*50;
-  score+=bonus;showFloat(dirt,bonus);updateHUD();setTimeout(()=>dirt.remove(),130);
-}
-function wrongClick(e){
-  if(!playing||e.target!==scene)return;
-  const penalty=100;
-  score=Math.max(0,score-penalty);
-  combo=0;
-  updateHUD();
-  showFloatAt(e.clientX,e.clientY,"-"+penalty);
-}
-function showMessage(title,text,duration=1000){
-  stageTitle.textContent=title;stageText.textContent=text;stageMessage.classList.add("show");
-  setTimeout(()=>stageMessage.classList.remove("show"),duration);
-}
+const pointTable={
+  gold:1500,
+  rare:700,
+  hard:350
+};
+
+const backgrounds=[
+  "stage1",
+  "stage2",
+  "stage3",
+  "stage4",
+  "stage5"
+];
+
 function startGame(){
-  clearInterval(timer);clearInterval(dirtTimer);result.classList.remove("show");
-  startCard.style.display="none";stage=1;score=0;combo=0;playing=true;
-  setScene();clearDirts();updateHUD();
-  showMessage("STAGE 1",STAGE_NAMES[0]+"スタート！",900);
-  setTimeout(()=>{if(playing){for(let i=0;i<7;i++)createDirt();dirtTimer=setInterval(createDirt,650);startTimer()}},900);
+
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.add("hidden");
+
+  stage=1;
+  score=0;
+  combo=0;
+
+  startStage();
 }
-function startTimer(){
-  clearInterval(timer);time=STAGE_TIME;updateHUD();
+
+function startStage(){
+
+  clearInterval(timer);
+
+  playing=true;
+  time=STAGE_TIME;
+  combo=0;
+
+  updateHUD();
+  clearGame();
+
+  const game=document.getElementById("game");
+
+  game.className=backgrounds[stage-1];
+
+  showStageMessage("STAGE "+stage);
+
+  createDirt(5+stage*2);
+
   timer=setInterval(()=>{
-    if(!playing)return;time--;
-    if(time<=0){time=0;updateHUD();clearInterval(timer);clearInterval(dirtTimer);endStage()}
-    else updateHUD();
+    if(!playing)return;
+
+    time--;
+    updateHUD();
+
+    if(time<=0){
+      nextStage();
+    }
+
   },1000);
 }
-function endStage(){
-  clearInterval(timer);clearInterval(dirtTimer);clearDirts();
-  if(stage<TOTAL_STAGES){
-    stage++;setScene();time=STAGE_TIME;updateHUD();
-    showMessage("STAGE "+stage,STAGE_NAMES[stage-1]+"へ！",1000);
-    setTimeout(()=>{if(playing){for(let i=0;i<7;i++)createDirt();dirtTimer=setInterval(createDirt,650);startTimer()}},1000);
-  }else finishGame();
+
+function createDirt(count){
+
+  for(let i=0;i<count;i++){
+
+    const dirt=document.createElement("div");
+
+    const types=["gold","gold","rare","hard"];
+    const type=types[Math.floor(Math.random()*types.length)];
+
+    dirt.className="dirt "+type;
+    dirt.dataset.type=type;
+
+    dirt.style.left=(5+Math.random()*82)+"%";
+    dirt.style.top=(5+Math.random()*85)+"%";
+
+    dirt.addEventListener("click",cleanDirt);
+
+    document.getElementById("game").appendChild(dirt);
+  }
 }
+
+function cleanDirt(e){
+
+  e.stopPropagation();
+
+  if(!playing)return;
+
+  const dirt=e.currentTarget;
+
+  if(dirt.dataset.cleaned)return;
+
+  dirt.dataset.cleaned="1";
+
+  const type=dirt.dataset.type;
+
+  let points=pointTable[type] || 100;
+
+  combo++;
+
+  const bonus=combo>=5 ? 100 : 0;
+
+  points+=bonus;
+
+  score+=points;
+
+  showFloat(dirt,"+"+points);
+
+  dirt.remove();
+
+  updateHUD();
+
+  if(document.querySelectorAll(".dirt").length===0){
+    setTimeout(nextStage,400);
+  }
+}
+
+function wrongTap(e){
+
+  if(!playing)return;
+
+  if(e.target.classList.contains("dirt"))return;
+
+  score-=100;
+
+  combo=0;
+
+  showFloatAt(e.clientX,e.clientY,"−100");
+
+  updateHUD();
+}
+
+function showFloat(dirt,text){
+
+  const r=dirt.getBoundingClientRect();
+
+  showFloatAt(
+    r.left+r.width/2,
+    r.top,
+    text
+  );
+}
+
+function showFloatAt(x,y,text){
+
+  const el=document.createElement("div");
+
+  el.className="float";
+  el.textContent=text;
+
+  el.style.left=(x-30)+"px";
+  el.style.top=(y-30)+"px";
+
+  document.body.appendChild(el);
+
+  setTimeout(()=>el.remove(),700);
+}
+
+function nextStage(){
+
+  if(!playing)return;
+
+  clearInterval(timer);
+
+  if(stage>=MAX_STAGE){
+
+    finishGame();
+    return;
+  }
+
+  stage++;
+
+  startStage();
+}
+
 function finishGame(){
-  playing=false;clearInterval(timer);clearInterval(dirtTimer);clearDirts();
-  if(score>best){best=score;localStorage.setItem("bisoBestScore",String(best))}
-  finalScore.textContent=score.toLocaleString()+"点";
-  document.getElementById("bestText").textContent=score>=best?"🏆 自己ベスト更新！":"🔥 自己ベスト："+best.toLocaleString()+"点";
-  result.classList.add("show");saveRanking(score);showRanking();
-}
-function judgeFriend(){
-  const v=Number(document.getElementById("friendScore").value);
-  if(!Number.isFinite(v)||v<0){judge.textContent="スコアを入力してな！";return}
-  judge.textContent=score>v?"🔥 勝ち！クリーンマスターや！":score===v?"🤝 引き分け！":"😤 負け！もう一回やろ！";
-}
-async function shareScore(){
-  const text=`🧹 美装職人！クリーンマスター\n${score.toLocaleString()}点でした！\nこのスコア超えられる？🔥`;
-  if(navigator.share){try{await navigator.share({text})}catch(e){}}
-  else{try{await navigator.clipboard.writeText(text);alert("挑戦状をコピーしたで！")}catch(e){alert(text)}}
+
+  playing=false;
+
+  clearInterval(timer);
+
+  clearGame();
+
+  document.getElementById("finalScore").textContent=
+    score.toLocaleString()+"点";
+
+  document.getElementById("rankScore").textContent=
+    score.toLocaleString()+"点";
+
+  document.getElementById("resultScreen").classList.remove("hidden");
 }
 
-/* 既存のSupabaseランキングをそのまま利用 */
-const SB_URL="https://xcbefejzuecysfyvxvpv.supabase.co";
-const SB_KEY="sb_publishable_WcqQ344XWyOo8XSrAemz8A_5c5XZ1y5";
+function clearGame(){
 
-async function saveRanking(value){
-  let name=localStorage.getItem("bisoPlayerName");
-  if(!name){
-    name=prompt("ランキングの名前を入力してな！","リュウタ");
-    name=(name||"匿名").trim().slice(0,20);
-    localStorage.setItem("bisoPlayerName",name);
-  }
-  try{
-    await fetch(SB_URL+"/rest/v1/leaderboard",{
-      method:"POST",
-      headers:{apikey:SB_KEY,"Content-Type":"application/json",Prefer:"return=minimal"},
-      body:JSON.stringify({player_name:name,score:value,stage:TOTAL_STAGES,combo:combo,correct:0,penalty:0})
-    });
-  }catch(e){console.error("ランキング保存エラー",e)}
-}
-async function showRanking(){
-  try{
-    const response=await fetch(
-      SB_URL+"/rest/v1/leaderboard?select=player_name,score&order=score.desc&limit=100",
-      {headers:{apikey:SB_KEY}}
-    );
-    if(!response.ok)throw new Error("ranking request failed");
-    const rows=await response.json();
-    const bestRows=Object.values(rows.reduce((a,item)=>{
-      if(!a[item.player_name]||Number(item.score)>Number(a[item.player_name].score))a[item.player_name]=item;
-      return a;
-    },{})).sort((a,b)=>Number(b.score)-Number(a.score)).slice(0,5);
-    if(!bestRows.length){rankingList.innerHTML='<div class="rankRow">まだ記録なし</div>';return}
-    const medals=["🥇","🥈","🥉","4️⃣","5️⃣"];
-    rankingList.innerHTML=bestRows.map((item,i)=>
-      `<div class="rankRow"><span>${medals[i]} ${i+1}位 ${escapeHtml(item.player_name)}</span><span>${Number(item.score).toLocaleString()}点</span></div>`
-    ).join("");
-  }catch(e){
-    rankingList.innerHTML='<div class="rankRow">ランキングを取得できませんでした</div>';
-    console.error(e);
-  }
-}
-function escapeHtml(s){
-  return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  document
+    .querySelectorAll(".dirt")
+    .forEach(d=>d.remove());
 }
 
-scene.addEventListener("pointerdown",wrongClick);
-document.getElementById("startBtn").addEventListener("click",startGame);
-document.getElementById("restartBtn").addEventListener("click",startGame);
-document.getElementById("judgeBtn").addEventListener("click",judgeFriend);
-document.getElementById("shareBtn").addEventListener("click",shareScore);
-updateHUD();
+function updateHUD(){
+
+  document.getElementById("stage").textContent=stage;
+  document.getElementById("time").textContent=Math.max(0,time);
+  document.getElementById("score").textContent=
+    score.toLocaleString();
+  document.getElementById("combo").textContent=combo;
+}
+
+function showStageMessage(text){
+
+  const el=document.getElementById("stageMessage");
+
+  el.textContent=text;
+
+  el.classList.remove("show");
+
+  void el.offsetWidth;
+
+  el.classList.add("show");
+}
+
 </script>
+
 </body>
 </html>
